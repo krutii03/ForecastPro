@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Vendors — ForecastPro</ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Vendors</h1>
+
+        <h:form id="venForm">
+            <p:growl id="growl"/>
+
+            <p:outputPanel id="vendorEditPanel">
+                <p:panel header="Vendor" rendered="#{userSession.admin}">
+                    <p:panelGrid columns="2" columnClasses="label,value">
+                        <p:outputLabel for="vn" value="Name"/>
+                        <p:inputText id="vn" value="#{vendorBean.formName}" required="true"/>
+                        <p:outputLabel for="vp" value="Contact"/>
+                        <p:inputText id="vp" value="#{vendorBean.formPhone}" placeholder="Phone / contact"/>
+                        <p:outputLabel for="vac" value="Active"/>
+                        <p:selectBooleanCheckbox id="vac" value="#{vendorBean.formActive}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="New" action="#{vendorBean.prepareNew}" process="@this"
+                                     update=":venForm:vendorEditPanel :venForm:venTable"
+                                     icon="pi pi-plus" styleClass="ui-button-secondary" style="margin-right:0.5rem;"/>
+                    <p:commandButton value="Save" action="#{vendorBean.save}"
+                                     process="vendorEditPanel"
+                                     update=":venForm:growl :venForm:vendorEditPanel :venForm:venTable"
+                                     icon="pi pi-save"/>
+                </p:panel>
+            </p:outputPanel>
+
+            <p:outputPanel id="venTable" styleClass="module-panel">
+                <p:dataTable id="venDataTable" value="#{vendorBean.vendors}" var="v" paginator="true" rows="10"
+                             styleClass="vendors-datatable"
+                             emptyMessage="No vendors.">
+                    <p:column headerText="Name">
+                        <h:outputText value="#{v.name}"/>
+                    </p:column>
+                    <p:column headerText="Contact">
+                        <h:outputText value="#{v.contact}"/>
+                    </p:column>
+                    <p:column headerText="Status" style="width:9rem">
+                        <h:outputText value="#{v.status}"/>
+                    </p:column>
+                    <p:column headerText="Actions" styleClass="col-actions" rendered="#{userSession.admin}">
+                        <p:commandButton value="Edit" action="#{vendorBean.prepareEdit(v)}" process="@this"
+                                         update=":venForm:vendorEditPanel :venForm:growl"
+                                         icon="pi pi-pencil" styleClass="ui-button-secondary" style="margin-right:0.35rem;"/>
+                        <p:commandButton value="Delete" action="#{vendorBean.delete(v)}" process="@this"
+                                         update=":venForm:growl :venForm:venTable"
+                                         icon="pi pi-trash" styleClass="ui-button-danger"
+                                         onclick="return confirm('Delete vendor?');"/>
+                    </p:column>
+                </p:dataTable>
+            </p:outputPanel>
+        </h:form>
+    </ui:define>
+</ui:composition>

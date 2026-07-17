@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Error — ForecastPro</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <h:outputStylesheet library="css" name="app.css"/>
+</h:head>
+<h:body>
+    <div class="layout-topbar">
+        <h:link outcome="/login.xhtml" styleClass="brand">
+            <h:graphicImage library="images" name="logo.png" alt="ForecastPro"
+                             styleClass="brand-logo" width="200" height="48"/>
+        </h:link>
+    </div>
+    <div style="padding:2rem;">
+        <h1>Something went wrong</h1>
+        <p:messages/>
+        <p>
+            <h:link outcome="/login.xhtml" value="Back to login"/>
+        </p>
+    </div>
+</h:body>
+</h:html>

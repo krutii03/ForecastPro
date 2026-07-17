@@ -1,0 +1,1151 @@
+.error-msg-block {
+    margin: 0 1.5rem 1rem 1.5rem;
+    padding: 0.75rem 1rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    color: #991b1b;
+    list-style: none;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #f4f6f8;
+    color: #1f2933;
+}
+
+.layout-topbar {
+    background: #1e3a5f;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.layout-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.topbar-logout-form {
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Glass pill on dark topbar (text-only sign out) */
+.topbar-logout-form .topbar-logout-btn.ui-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 1px solid rgba(255, 255, 255, 0.42) !important;
+    color: #fff !important;
+    border-radius: 9999px;
+    padding: 0.45rem 1.15rem !important;
+    font-weight: 600 !important;
+    font-size: 0.8125rem !important;
+    letter-spacing: 0.03em;
+    text-transform: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.topbar-logout-form .topbar-logout-btn.ui-button:hover {
+    background: rgba(255, 255, 255, 0.24) !important;
+    border-color: rgba(255, 255, 255, 0.65) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+}
+
+.topbar-logout-form .topbar-logout-btn.ui-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.topbar-logout-form .topbar-logout-btn.ui-button .ui-button-text,
+.topbar-logout-form .topbar-logout-btn.ui-button .ui-button-text.ui-c,
+.topbar-logout-form .topbar-logout-btn.ui-button .p-button-label {
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 1.25 !important;
+}
+
+.topbar-logout-form .topbar-logout-btn.ui-button:focus {
+    outline: 2px solid rgba(147, 197, 253, 0.85);
+    outline-offset: 2px;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 1.25rem;
+    text-decoration: none;
+}
+
+.brand-logo,
+img.brand-logo,
+.layout-topbar .brand img,
+.brand .ui-graphic,
+.brand img {
+    width: 200px !important;
+    height: 48px !important;
+    max-width: 200px !important;
+    max-height: 48px !important;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+}
+
+.brand-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-left: 0.35rem;
+}
+
+.brand-text {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.user-label {
+    font-size: 0.9rem;
+    opacity: 0.95;
+}
+
+.layout-wrapper {
+    display: flex;
+    min-height: calc(100vh - 52px);
+}
+
+.layout-menu {
+    width: 240px;
+    background: #fff;
+    border-right: 1px solid #e5e7eb;
+    padding: 1rem 0;
+}
+
+/* p:menu in sidebar: Saga highlights "active" item with blue bar/fill — keep calm like plain links */
+.layout-menu .ui-menu,
+.layout-menu .p-menu {
+    border: none !important;
+    background: transparent !important;
+}
+
+.layout-menu .ui-menu-list > .ui-menuitem,
+.layout-menu .p-menu-list > .p-menuitem {
+    border: none !important;
+    border-left: none !important;
+    background: transparent !important;
+}
+
+.layout-menu .ui-menuitem-link,
+.layout-menu .ui-menuitem-link.ui-state-active,
+.layout-menu .ui-menuitem-link.ui-state-focus,
+.layout-menu .p-menuitem-link,
+.layout-menu .p-menuitem-link.p-highlight,
+.layout-menu .p-menuitem-link:focus {
+    background: transparent !important;
+    border: none !important;
+    border-left: none !important;
+    box-shadow: none !important;
+    color: #374151 !important;
+}
+
+.layout-menu .ui-menuitem-link:hover,
+.layout-menu .p-menuitem-link:not(.p-disabled):hover {
+    background: #f3f4f6 !important;
+    color: #111827 !important;
+}
+
+.layout-menu .ui-menuitem-link .ui-menuitem-icon,
+.layout-menu .ui-menuitem-link.ui-state-active .ui-menuitem-icon,
+.layout-menu .p-menuitem-icon {
+    color: #6b7280 !important;
+}
+
+.layout-menu .ui-menuitem.ui-state-active,
+.layout-menu .p-menuitem.p-highlight {
+    background: transparent !important;
+    border-left: none !important;
+}
+
+.layout-content {
+    flex: 1;
+    min-width: 0;
+    padding: 1.5rem;
+}
+
+/* JSF native <select> styling (used on Forecast pages) */
+.app-root select.fp-jsf-select {
+    width: 100%;
+    max-width: 320px;
+    padding: 0.55rem 0.7rem;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #111827;
+    font-size: 0.95rem;
+    line-height: 1.25;
+}
+
+.app-root select.fp-jsf-select:focus {
+    outline: 2px solid rgba(37, 99, 235, 0.35);
+    outline-offset: 2px;
+    border-color: #2563eb;
+}
+
+/* Primary-ish button for JSF command buttons */
+.app-root .fp-primary-btn {
+    background: #2563eb !important;
+    border: 1px solid #2563eb !important;
+    color: #fff !important;
+    padding: 0.55rem 1.05rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+}
+.app-root .fp-primary-btn:hover {
+    background: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+}
+
+/* Forecast Generate: p:commandButton = real <button>; h:commandButton was <input> and ignored theme sizing */
+.app-root .layout-content .fp-generate-pf.ui-button,
+.app-root .layout-content button.fp-generate-pf {
+    min-width: 22rem !important;
+    min-height: 3.35rem !important;
+    padding: 1rem 2.75rem !important;
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    line-height: 1.35 !important;
+    letter-spacing: 0.02em;
+    border-radius: 10px !important;
+    background: #2563eb !important;
+    border: 1px solid #2563eb !important;
+    color: #fff !important;
+}
+.app-root .layout-content .fp-generate-pf.ui-button:hover,
+.app-root .layout-content button.fp-generate-pf:hover {
+    background: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+}
+
+.app-root .layout-content .fp-forecast-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    max-width: 46rem;
+}
+
+.app-root .layout-content .fp-forecast-actions .fp-generate-pf.ui-button,
+.app-root .layout-content .fp-forecast-actions button.fp-generate-pf {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    flex: 0 1 auto;
+    max-width: none;
+    padding: 0.5rem 1.15rem !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    border-radius: 8px !important;
+}
+
+/* Main app: force readable DataTable / panel surfaces (Saga + layout) */
+.app-root .layout-content table thead > tr > th,
+.app-root .layout-content .ui-datatable thead th,
+.app-root .layout-content .p-datatable-thead > tr > th {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border-color: #e2e8f0 !important;
+}
+
+.app-root .layout-content table tbody > tr > td,
+.app-root .layout-content .ui-datatable tbody td,
+.app-root .layout-content .p-datatable-tbody > tr > td {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    border-color: #e5e7eb !important;
+}
+
+.app-root .layout-content table tbody > tr:hover > td,
+.app-root .layout-content .ui-datatable tbody tr:hover td {
+    background: #f8fafc !important;
+}
+
+.app-root .layout-content .ui-panel .ui-panel-titlebar {
+    background: #f8fafc !important;
+    color: #111827 !important;
+    border-color: #e5e7eb !important;
+}
+
+.app-root .layout-content .ui-panel .ui-panel-content {
+    background: #fff !important;
+    color: #1e293b !important;
+}
+
+/* Reports: normalize time filter button sizes */
+.app-root .time-filter-btn .ui-button {
+    padding: 0.4rem 1rem !important;
+    font-size: 14px !important;
+}
+
+.page-title {
+    margin-top: 0;
+    font-size: 1.35rem;
+    font-weight: 600;
+}
+
+.field-hint {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.metric-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e3a5f;
+}
+
+.metric-value--text {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.inv-badge {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.inv-badge-healthy {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.inv-badge-restock {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.inv-badge-critical,
+.inv-badge-urgent {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.inv-badge-reduce {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+.metric-label {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.grid-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Dashboard shortcut tiles: wrapper div carries the “card”; link fills it (avoids theme flattening <a>) */
+.dashboard-shortcuts-section {
+    margin-top: 0.25rem;
+}
+
+.dashboard-shortcuts-heading {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    color: #111827;
+}
+
+.app-root #dashboardShortcuts.dashboard-shortcuts-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)) !important;
+    gap: 1rem !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.app-root .dashboard-shortcut-tile {
+    display: block !important;
+    min-width: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+}
+
+.app-root .dashboard-shortcut-tile:hover {
+    border-color: #93c5fd;
+    box-shadow: 0 4px 14px rgba(30, 58, 95, 0.12);
+    transform: translateY(-2px);
+}
+
+.app-root .dashboard-shortcut-link,
+.app-root .dashboard-shortcut-link:visited {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.6rem !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 5.75rem !important;
+    padding: 1.1rem 0.85rem !important;
+    margin: 0 !important;
+    text-decoration: none !important;
+    color: #1e3a5f !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    text-align: center !important;
+    line-height: 1.25 !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+.app-root .dashboard-shortcut-link:hover {
+    color: #1e3a5f !important;
+    text-decoration: none !important;
+}
+
+.app-root .dashboard-shortcut-icon {
+    font-size: 1.65rem;
+    color: #2563eb;
+}
+
+.app-root .dashboard-shortcut-label {
+    display: block;
+}
+
+.hint {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.analytics-section {
+    margin-bottom: 20px;
+}
+
+.analytics-toolbar {
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+.analytics-chart-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: stretch;
+}
+
+.analytics-chart-panel .ui-panel-content {
+    padding-top: 0.5rem;
+}
+
+.analytics-two-col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: start;
+}
+
+.analytics-two-col .ui-panel,
+.analytics-chart-row .ui-panel,
+.analytics-full-table {
+    min-width: 0;
+}
+
+.analytics-col-half {
+    width: 50%;
+}
+
+@media (max-width: 1100px) {
+    .analytics-chart-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .analytics-two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+.forecast-history-table thead th {
+    text-align: left;
+    vertical-align: bottom;
+}
+
+.forecast-field-label {
+    font-weight: 600;
+    color: #374151;
+    padding-right: 0.75rem;
+    display: inline-block;
+}
+
+.forecast-label-col {
+    width: 42%;
+    vertical-align: top;
+    padding-bottom: 0.5rem;
+}
+
+.forecast-value-col {
+    vertical-align: top;
+    padding-bottom: 0.5rem;
+}
+
+.col-actions {
+    white-space: nowrap;
+    text-align: center;
+}
+
+.login-card .ui-card-body {
+    padding: 1.25rem 1.5rem;
+}
+
+/* ── Login page (no topbar; logo2 above form) ── */
+.login-page {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(160deg, #0f2744 0%, #1e3a5f 42%, #1d4ed8 100%);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+.login-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+    box-sizing: border-box;
+}
+
+.login-panel {
+    width: 100%;
+    max-width: 420px;
+}
+
+.login-brand {
+    text-align: center;
+    margin-bottom: 1.75rem;
+}
+
+.login-logo,
+img.login-logo {
+    display: block;
+    width: auto;
+    max-width: min(300px, 88vw);
+    height: auto;
+    max-height: 96px;
+    margin: 0 auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
+}
+
+.login-tagline {
+    margin: 0.85rem 0 0;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.login-card.ui-card,
+.login-card.p-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28), 0 2px 8px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+}
+
+.login-card .ui-card-body,
+.login-card .p-card-body {
+    padding: 2rem 1.75rem 1.75rem !important;
+    background: #fff;
+}
+
+.login-heading {
+    margin: 0 0 0.35rem;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: center;
+}
+
+.login-subheading {
+    margin: 0 0 1.5rem;
+    font-size: 0.9rem;
+    color: #64748b;
+    text-align: center;
+}
+
+.login-field {
+    margin-bottom: 1.1rem;
+}
+
+.login-label,
+.login-field label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.login-input,
+.login-field .ui-inputfield,
+.login-field input.ui-inputtext,
+.login-field input.ui-password {
+    width: 100% !important;
+    box-sizing: border-box;
+    border-radius: 10px !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 0.65rem 0.85rem !important;
+    font-size: 0.95rem !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.login-input:focus,
+.login-field .ui-inputfield:focus,
+.login-field input.ui-inputtext:focus,
+.login-field input.ui-password:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18) !important;
+    outline: none;
+}
+
+.login-submit,
+.login-submit.ui-button,
+.login-submit.p-button {
+    width: 100% !important;
+    margin-top: 0.5rem;
+    padding: 0.7rem 1rem !important;
+    border-radius: 10px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    background: #2563eb !important;
+    border: 1px solid #1d4ed8 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.login-submit:hover,
+.login-submit.ui-button:hover {
+    background: #1d4ed8 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+}
+
+.login-page .ui-growl {
+    top: 1.25rem;
+    right: 1.25rem;
+}
+
+.module-panel {
+    margin-bottom: 1.25rem;
+}
+
+.status-pending,
+.status-approved,
+.status-rejected,
+.status-ready,
+.status-out-delivery,
+.status-delivered,
+.status-received {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-approved {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-ready {
+    background: #ffedd5;
+    color: #9a3412;
+}
+
+.status-out-delivery {
+    background: #ede9fe;
+    color: #5b21b6;
+}
+
+.status-delivered {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-received {
+    background: #064e3b;
+    color: #ecfdf5;
+}
+
+.thread-meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.thread-reply {
+    border-left: 3px solid #e5e7eb;
+    padding-left: 0.75rem;
+    margin: 0.75rem 0;
+}
+
+.vendor-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.5rem 0.75rem 1rem;
+}
+
+.vendor-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 0.75rem;
+    color: #1f2933;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.vendor-nav-link:hover {
+    background: #f3f4f6;
+}
+
+.vendor-nav-icon {
+    opacity: 0.85;
+}
+
+.vendor-nav-logout-form {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.app-menu-logout-wrap {
+    padding: 0.5rem 0.75rem 1rem;
+}
+
+.vendor-nav-button {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    padding: 0.65rem 0.75rem;
+    margin: 0;
+    font: inherit;
+    font-size: 0.95rem;
+    color: #1f2933;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.vendor-nav-button:hover {
+    background: #f3f4f6;
+}
+
+/* Vendor portal: same shell as admin (layout-topbar + layout-menu p:menu); extra content tweaks only */
+.vendor-portal .vendor-portal-global-msgs {
+    margin: 0 1.5rem 0 1.5rem;
+}
+
+.vendor-portal .vendor-page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1.25rem;
+}
+
+.vendor-portal .vendor-dash-metrics {
+    margin-bottom: 0.25rem;
+}
+
+.vendor-portal .vendor-dash-metrics .metric-card {
+    padding: 1.25rem 1.35rem;
+}
+
+.vendor-portal .vendor-dash-actions {
+    margin: 1.25rem 0 0;
+}
+
+.vendor-portal .vendor-primary-btn {
+    display: inline-block;
+    padding: 0.55rem 1.35rem;
+    background: #2563eb;
+    color: #fff !important;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.25);
+}
+
+.vendor-portal .vendor-primary-btn:hover {
+    background: #1d4ed8;
+    color: #fff !important;
+}
+
+.vendor-portal .vendor-requests-panel table thead > tr > th,
+.vendor-portal .vendor-requests-panel .ui-datatable thead th,
+.vendor-portal .vendor-requests-panel .p-datatable-thead > tr > th {
+    background: #f8fafc !important;
+    color: #0f172a !important;
+}
+
+.vendor-portal .vendor-requests-panel table tbody > tr > td,
+.vendor-portal .vendor-requests-panel .ui-datatable tbody td,
+.vendor-portal .vendor-requests-panel .p-datatable-tbody > tr > td {
+    background: #fff !important;
+    color: #1e293b !important;
+}
+
+@media (max-width: 768px) {
+    .vendor-portal .layout-wrapper {
+        flex-direction: column;
+    }
+
+    .vendor-portal .layout-menu {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+}
+
+/* ——— Reports page ——— */
+.app-root .reports-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #1e3a5f;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.app-root .reports-back-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.app-root .reports-hub-intro {
+    color: #64748b;
+    margin: -0.25rem 0 1.25rem 0;
+    font-size: 0.95rem;
+}
+
+.app-root .reports-page .reports-section.module-panel {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1rem 1.15rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    margin-bottom: 1rem;
+}
+
+.app-root .reports-page .reports-section-title {
+    margin: 0 0 0.85rem 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* Grid: inline fallback if app.css is cached on deploy */
+.app-root .reports-page .reports-type-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 1rem !important;
+    width: 100% !important;
+}
+
+.app-root .reports-page .reports-type-tile {
+    display: block;
+    min-height: 90px;
+    height: 90px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+    transition: border-color 0.18s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.app-root .reports-page .reports-type-tile:hover {
+    border-color: #93c5fd;
+    box-shadow: 0 8px 20px rgba(30, 58, 95, 0.14);
+    transform: translateY(-2px);
+}
+
+.app-root .reports-page .reports-type-tile--active {
+    border-color: #2563eb;
+    background: linear-gradient(180deg, #eff6ff 0%, #fff 100%);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.18);
+}
+
+.app-root .reports-page .reports-type-tile-link,
+.app-root .reports-page .reports-type-tile-link.ui-commandlink,
+.app-root .reports-page .reports-type-tile-link.p-commandlink,
+.app-root .reports-page a.reports-type-tile-link {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.45rem !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 90px !important;
+    padding: 0.65rem 0.75rem !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    text-decoration: none !important;
+    color: #1e3a5f !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.app-root .reports-page .reports-type-tile-link:hover,
+.app-root .reports-page .reports-type-tile-link:focus {
+    color: #1e3a5f !important;
+    text-decoration: none !important;
+}
+
+.app-root .reports-page .reports-type-card-icon {
+    font-size: 1.35rem;
+    color: #2563eb;
+    line-height: 1;
+}
+
+.app-root .reports-page .reports-type-card-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.25;
+}
+
+.app-root .reports-page .reports-filters-panel {
+    padding: 1rem 1.15rem;
+}
+
+.app-root .reports-page .reports-filter-row {
+    margin-bottom: 1rem;
+}
+
+.app-root .reports-page .reports-filter-row--last {
+    margin-bottom: 0;
+}
+
+.app-root .reports-page .reports-filter-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1rem 1.25rem;
+    align-items: end;
+}
+
+.app-root .reports-page .reports-filter-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    min-width: 0;
+}
+
+.app-root .reports-page .reports-filter-col--range {
+    justify-content: flex-end;
+    padding-bottom: 0.15rem;
+}
+
+.app-root .reports-page .reports-filter-col--actions {
+    justify-content: flex-end;
+}
+
+.app-root .reports-page .reports-filter-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #374151;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.app-root .reports-page .reports-filter-label--invisible {
+    visibility: hidden;
+    height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.app-root .reports-page .reports-range-muted {
+    display: block;
+    font-size: 0.95rem;
+    color: #6b7280;
+    line-height: 1.45;
+    font-weight: 500;
+}
+
+.app-root .reports-page .reports-filter-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    align-items: center;
+}
+
+.app-root .reports-page .reports-time-toggle.ui-selectonebutton,
+.app-root .reports-page .reports-time-toggle.p-selectonebutton {
+    display: inline-flex;
+}
+
+.app-root .reports-page .reports-time-toggle .ui-button,
+.app-root .reports-page .reports-time-toggle .p-button {
+    min-height: 40px !important;
+    height: 40px !important;
+    padding: 0 1rem !important;
+    font-size: 0.875rem !important;
+}
+
+.app-root .reports-page .reports-filter-select,
+.app-root .reports-page .reports-filter-select.ui-selectonemenu,
+.app-root .reports-page .reports-filter-select .ui-selectonemenu {
+    width: 260px !important;
+    max-width: 100%;
+    min-height: 40px !important;
+    height: 40px !important;
+    box-sizing: border-box;
+}
+
+.app-root .reports-page .reports-filter-select--month,
+.app-root .reports-page .reports-filter-select--month.ui-selectonemenu {
+    width: 180px !important;
+}
+
+.app-root .reports-page .reports-filter-select--year,
+.app-root .reports-page .reports-filter-select--year.ui-selectonemenu {
+    width: 120px !important;
+}
+
+.app-root .reports-page .reports-filter-select .ui-selectonemenu-label,
+.app-root .reports-page .reports-filter-select .p-selectonemenu-label {
+    line-height: 38px !important;
+}
+
+.app-root .reports-page .reports-filter-date,
+.app-root .reports-page .reports-filter-date input,
+.app-root .reports-page .reports-filter-date .ui-inputfield {
+    width: 180px !important;
+    max-width: 100%;
+    min-height: 40px !important;
+    height: 40px !important;
+    box-sizing: border-box;
+}
+
+.app-root .reports-page .reports-apply-btn.ui-button,
+.app-root .reports-page .reports-apply-btn.p-button {
+    min-height: 40px !important;
+    height: 40px !important;
+    width: 260px;
+    max-width: 100%;
+    padding: 0 1.25rem !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+}
+
+.app-root .reports-page .reports-table-heading {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.app-root .reports-page .reports-table-block {
+    margin-top: 1rem;
+}
+
+.app-root .reports-page .reports-toolbar {
+    margin: 0 0 0.5rem 0 !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+@media (max-width: 900px) {
+    .app-root .reports-page .reports-type-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-root .reports-page .reports-type-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .app-root .reports-page .reports-filter-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .app-root .reports-page .reports-filter-select,
+    .app-root .reports-page .reports-filter-select.ui-selectonemenu,
+    .app-root .reports-page .reports-filter-date,
+    .app-root .reports-page .reports-filter-date input,
+    .app-root .reports-page .reports-apply-btn.ui-button {
+        width: 100% !important;
+    }
+}

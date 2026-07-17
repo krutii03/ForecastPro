@@ -1,0 +1,181 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Sales forecast — ForecastPro</ui:define>
+
+    <ui:define name="metadata">
+        <f:viewAction action="#{salesForecastBean.loadCategories}"/>
+        <f:viewAction action="#{salesForecastBean.loadRecentForecasts}"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Sales forecast</h1>
+
+        <h:form id="sfForm">
+            <p:growl id="sfGrowl" showDetail="true" sticky="false"/>
+
+            <div class="grid-metrics analytics-section" style="margin-bottom:1rem;">
+                <div class="metric-card">
+                    <div class="metric-label">Forecasted revenue</div>
+                    <div class="metric-value">
+                        <h:outputText value="#{salesForecastBean.forecastKpis.forecastedRevenue}">
+                            <f:convertNumber type="currency" currencySymbol="₹"/>
+                        </h:outputText>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Total predicted units</div>
+                    <div class="metric-value">
+                        <h:outputText value="#{salesForecastBean.forecastKpis.totalPredictedUnits}"/>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Highest predicted product</div>
+                    <div class="metric-value metric-value--text">
+                        <h:outputText value="#{salesForecastBean.forecastKpis.highestPredictedProduct}"/>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Lowest predicted product</div>
+                    <div class="metric-value metric-value--text">
+                        <h:outputText value="#{salesForecastBean.forecastKpis.lowestPredictedProduct}"/>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Forecast growth %</div>
+                    <div class="metric-value">
+                        <h:outputText value="#{salesForecastBean.forecastKpis.forecastGrowthPercent}"/>%
+                    </div>
+                </div>
+            </div>
+
+            <p:panel header="Select product">
+                <p:panelGrid columns="2" style="max-width:46rem;">
+                    <h:outputLabel for="sfc" value="Select category"/>
+                    <h:selectOneMenu id="sfc" value="#{salesForecastBean.selectedCategoryId}"
+                                     styleClass="fp-jsf-select">
+                        <f:selectItem itemLabel="— choose —" itemValue="#{null}"/>
+                        <f:selectItems value="#{salesForecastBean.categories}" var="c"
+                                       itemValue="#{c.id}" itemLabel="#{c.name}"/>
+                        <f:ajax listener="#{salesForecastBean.loadProducts}" render="sfpWrap"/>
+                    </h:selectOneMenu>
+
+                    <h:outputLabel for="sfp" value="Select product"/>
+                    <h:panelGroup id="sfpWrap">
+                        <h:selectOneMenu id="sfp" value="#{salesForecastBean.selectedProductId}"
+                                         styleClass="fp-jsf-select">
+                            <f:selectItem itemLabel="— choose —" itemValue="#{null}"/>
+                            <f:selectItems value="#{salesForecastBean.products}" var="pr"
+                                           itemValue="#{pr.id}" itemLabel="#{pr.name}"/>
+                        </h:selectOneMenu>
+                    </h:panelGroup>
+                </p:panelGrid>
+                <div class="fp-forecast-actions">
+                    <p:commandButton value="Generate" action="#{salesForecastBean.generate}" ajax="false"
+                                     styleClass="ui-button ui-widget ui-corner-all fp-generate-pf"/>
+                    <p:commandButton value="Generate all products" action="#{salesForecastBean.generateAll}" ajax="false"
+                                     styleClass="ui-button ui-widget ui-corner-all fp-generate-pf"/>
+                </div>
+            </p:panel>
+
+            <!-- Latest result appears only after Generate -->
+            <p:panel header="Latest result (revenue)" rendered="#{salesForecastBean.lastForecast != null}" style="margin-top:1rem;">
+                <p:panelGrid columns="2" columnClasses="forecast-label-col,forecast-value-col">
+                    <h:outputText value="Product" styleClass="forecast-field-label"/>
+                    <h:outputText value="#{salesForecastBean.lastForecast.product.name}"/>
+
+                    <h:outputText value="Unit price" styleClass="forecast-field-label"/>
+                    <h:outputText value="#{salesForecastBean.displayUnitPrice}">
+                        <f:convertNumber type="currency" currencySymbol="₹"/>
+                    </h:outputText>
+
+                    <h:outputText value="Predicted units" styleClass="forecast-field-label"/>
+                    <h:outputText value="#{salesForecastBean.lastForecast.predictedSales}"/>
+
+                    <h:outputText value="Confidence range" styleClass="forecast-field-label"/>
+                    <h:outputText value="#{salesForecastBean.lastForecast.lowerBound} — #{salesForecastBean.lastForecast.upperBound} units"/>
+
+                    <h:outputText value="Predicted revenue (units × price)" styleClass="forecast-field-label"/>
+                    <h:outputText value="#{salesForecastBean.lastForecast.predictedRevenue}">
+                        <f:convertNumber type="currency" currencySymbol="₹"/>
+                    </h:outputText>
+
+                    <h:outputText value="Prediction month" styleClass="forecast-field-label"/>
+                    <h:outputText value="#{salesForecastBean.lastForecast.forecastMonth}">
+                        <f:convertDateTime type="localDate" pattern="MMMM yyyy"/>
+                    </h:outputText>
+                </p:panelGrid>
+            </p:panel>
+
+            <p:panelGrid columns="3" layout="grid" styleClass="ui-fluid" style="margin-top:1rem;">
+                <p:panel header="Revenue trend" styleClass="analytics-chart-panel">
+                    <p:lineChart model="#{salesForecastBean.lineModel}"
+                                 style="width:100%;height:240px"/>
+                </p:panel>
+                <p:panel header="Product-wise revenue" styleClass="analytics-chart-panel">
+                    <p:barChart model="#{salesForecastBean.barModel1}"
+                                style="width:100%;height:240px"/>
+                </p:panel>
+                <p:panel header="Top predicted revenue" styleClass="analytics-chart-panel">
+                    <p:barChart model="#{salesForecastBean.barModel2}"
+                                style="width:100%;height:240px"/>
+                </p:panel>
+            </p:panelGrid>
+
+            <p:panel header="Top predicted revenue" styleClass="analytics-section analytics-full-table" style="margin-top:1rem;">
+                <p:dataTable value="#{salesForecastBean.topPredictedRevenueList}" var="tp"
+                             paginator="true" rows="8" paginatorPosition="bottom"
+                             emptyMessage="No forecast data yet. Generate a forecast above.">
+                    <p:column headerText="Product">
+                        <h:outputText value="#{tp.productName}"/>
+                    </p:column>
+                    <p:column headerText="Predicted revenue">
+                        <h:outputText value="#{tp.predictedRevenue}">
+                            <f:convertNumber type="currency" currencySymbol="₹"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Month">
+                        <h:outputText value="#{tp.predictionMonth}">
+                            <f:convertDateTime type="localDate" pattern="MMMM yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+
+            <p:panel id="sfHistoryPanel" header="Sales forecast history" style="margin-top:1rem;">
+                <p:dataTable value="#{salesForecastBean.salesForecastHistoryList}" var="f"
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             emptyMessage="No forecasts yet.">
+                    <p:column headerText="Product">
+                        <h:outputText value="#{f.product.name}"/>
+                    </p:column>
+                    <p:column headerText="Unit price">
+                        <h:outputText value="#{f.product.price}">
+                            <f:convertNumber type="currency" currencySymbol="₹"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Predicted units">
+                        <h:outputText value="#{f.predictedSales}"/>
+                    </p:column>
+                    <p:column headerText="Confidence range">
+                        <h:outputText value="#{f.lowerBound}"/> — <h:outputText value="#{f.upperBound}"/>
+                    </p:column>
+                    <p:column headerText="Predicted revenue">
+                        <h:outputText value="#{f.predictedRevenue}">
+                            <f:convertNumber type="currency" currencySymbol="₹"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Month">
+                        <h:outputText value="#{f.forecastMonth}">
+                            <f:convertDateTime type="localDate" pattern="MMMM yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

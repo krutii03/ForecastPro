@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+<f:view contentType="text/html;charset=UTF-8">
+    <f:metadata>
+        <ui:insert name="metadata"/>
+    </f:metadata>
+    <h:head>
+        <title><ui:insert name="title">Vendor — ForecastPro</ui:insert></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <h:outputStylesheet library="primefaces" name="primeicons/primeicons.css"/>
+        <h:outputStylesheet library="css" name="app.css"/>
+    </h:head>
+    <h:body styleClass="vendor-portal app-root">
+    <p:growl id="growl" showDetail="true" sticky="false"/>
+    <h:messages id="globalMessages" globalOnly="true" layout="block"
+                styleClass="error-msg-block vendor-portal-global-msgs" errorClass="error-msg" fatalClass="error-msg"/>
+    <div class="layout-topbar">
+        <h:link outcome="/vendor/dashboard.xhtml" styleClass="brand">
+            <h:graphicImage library="images" name="logo.png" alt="ForecastPro Vendor"
+                             styleClass="brand-logo" width="200" height="48"/>
+            <span class="brand-subtitle">Vendor</span>
+        </h:link>
+        <div class="layout-topbar-right">
+            <span class="user-label">
+                <h:outputText value="#{userSession.currentUser.username}"/>
+                (<h:outputText value="#{userSession.currentUser.role}"/>)
+            </span>
+            <h:form id="vendorTopbarLogoutForm" styleClass="topbar-logout-form">
+                <p:commandButton id="vendorTopLogoutBtn"
+                                 value="Sign out"
+                                 action="#{userSession.logoutAction}"
+                                 ajax="false"
+                                 immediate="true"
+                                 styleClass="topbar-logout-btn"/>
+            </h:form>
+        </div>
+    </div>
+    <div class="layout-wrapper">
+        <div class="layout-menu">
+            <h:form id="menuForm">
+                <p:menu style="width:100%; border:none;">
+                    <p:menuitem value="Dashboard" outcome="/vendor/dashboard.xhtml" icon="pi pi-home"/>
+                    <p:menuitem value="Stock requests" outcome="/vendor/requests.xhtml" icon="pi pi-shopping-bag"/>
+                    <p:menuitem value="Messages" outcome="/vendor/messages.xhtml" icon="pi pi-envelope"/>
+                </p:menu>
+            </h:form>
+        </div>
+        <div class="layout-content">
+            <ui:insert name="content"/>
+        </div>
+    </div>
+    </h:body>
+</f:view>
+</html>

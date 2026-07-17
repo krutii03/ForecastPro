@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/vendor-main.xhtml">
+
+    <ui:define name="title">Messages — ForecastPro</ui:define>
+
+    <ui:define name="metadata">
+        <f:viewAction action="#{messageBean.refresh}"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title vendor-page-title">Messages</h1>
+
+        <h:form id="vendorMsgForm">
+            <p:growl id="vendorMsgGrowl" showDetail="true"/>
+
+            <p:outputPanel layout="block" styleClass="module-panel" style="margin-bottom:1.25rem;">
+                <p:panel header="New message to admin">
+                    <p:panelGrid columns="2" columnClasses="label,value">
+                        <p:outputLabel for="vcs" value="Subject"/>
+                        <p:inputText id="vcs" value="#{messageBean.composeSubject}" required="true"/>
+                        <p:outputLabel for="vcb" value="Message"/>
+                        <p:inputTextarea id="vcb" value="#{messageBean.composeBody}" rows="4" cols="50" required="true"/>
+                    </p:panelGrid>
+                    <p:commandButton value="Send" action="#{messageBean.sendToAdmin}" update="vendorMsgForm"
+                                     icon="pi pi-send" styleClass="vendor-primary-btn"/>
+                </p:panel>
+            </p:outputPanel>
+
+            <p:outputPanel styleClass="module-panel vendor-messages-panel">
+                <p:dataTable id="vendorMessagesTable" value="#{messageBean.messages}" var="msg"
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             styleClass="vendor-messages-datatable"
+                             lazy="false" emptyMessage="No messages.">
+                    <p:column headerText="Subject" style="width:22%">
+                        <h:outputText value="#{msg.subject}"/>
+                    </p:column>
+                    <p:column headerText="Message">
+                        <h:outputText value="#{msg.body}"/>
+                    </p:column>
+                    <p:column headerText="Sender" style="width:10%">
+                        <h:outputText value="#{msg.sender.username}"/>
+                    </p:column>
+                    <p:column headerText="Receiver" style="width:10%">
+                        <h:outputText value="#{messageBean.recipientName(msg)}"/>
+                    </p:column>
+                    <p:column headerText="Status" style="width:8%">
+                        <span class="#{messageBean.isOpen(msg) ? 'status-pending' : 'status-delivered'}">
+                            <h:outputText value="#{msg.status}"/>
+                        </span>
+                    </p:column>
+                    <p:column headerText="Created" style="width:14%">
+                        <h:outputText value="#{messageBean.formatInstant(msg.createdAt)}"/>
+                    </p:column>
+                    <p:column headerText="" style="width:7rem">
+                        <p:commandButton value="Close" action="#{messageBean.closeMessage(msg)}"
+                                         process="@this" update="vendorMessagesTable"
+                                         rendered="#{messageBean.isOpen(msg)}"
+                                         icon="pi pi-check" styleClass="ui-button-secondary"/>
+                    </p:column>
+                </p:dataTable>
+            </p:outputPanel>
+        </h:form>
+    </ui:define>
+</ui:composition>

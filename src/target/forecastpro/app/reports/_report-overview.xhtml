@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <div class="reports-section module-panel">
+        <h2 class="reports-section-title">Overview</h2>
+        <h:panelGroup rendered="#{reportsBean.showForecastKpis}" layout="block">
+            <div class="grid-metrics analytics-section" style="margin:0 0 1rem 0;">
+                <div class="metric-card">
+                    <div class="metric-label">Forecasted revenue</div>
+                    <div class="metric-value">
+                        <h:outputText value="#{reportsBean.forecastKpis.forecastedRevenue}">
+                            <f:convertNumber type="currency" currencySymbol="₹"/>
+                        </h:outputText>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Total predicted units</div>
+                    <div class="metric-value">
+                        <h:outputText value="#{reportsBean.forecastKpis.totalPredictedUnits}"/>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Highest predicted product</div>
+                    <div class="metric-value metric-value--text">
+                        <h:outputText value="#{reportsBean.forecastKpis.highestPredictedProduct}"/>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Lowest predicted product</div>
+                    <div class="metric-value metric-value--text">
+                        <h:outputText value="#{reportsBean.forecastKpis.lowestPredictedProduct}"/>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Forecast growth %</div>
+                    <div class="metric-value">
+                        <h:outputText value="#{reportsBean.forecastKpis.forecastGrowthPercent}"/>%
+                    </div>
+                </div>
+            </div>
+        </h:panelGroup>
+        <div class="grid-metrics analytics-section" style="margin:0 0 1rem 0;">
+            <div class="metric-card">
+                <div class="metric-label">Total revenue</div>
+                <div class="metric-value">
+                    <h:outputText value="#{reportsBean.kpiRevenue}">
+                        <f:convertNumber type="currency" currencySymbol="₹"/>
+                    </h:outputText>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Total units</div>
+                <div class="metric-value">
+                    <h:outputText value="#{reportsBean.kpiUnits}"/>
+                </div>
+            </div>
+        </div>
+        <div class="analytics-chart-row">
+            <p:panel header="Trend" styleClass="analytics-chart-panel">
+                <p:lineChart model="#{reportsBean.lineModel}" style="width:100%;height:240px"/>
+            </p:panel>
+            <p:panel header="Comparison" styleClass="analytics-chart-panel">
+                <p:barChart model="#{reportsBean.barModel}" style="width:100%;height:240px"/>
+            </p:panel>
+            <p:panel header="Distribution" styleClass="analytics-chart-panel">
+                <p:pieChart model="#{reportsBean.pieModel}" style="width:100%;height:240px"/>
+            </p:panel>
+        </div>
+    </div>
+</ui:composition>

@@ -1,0 +1,33 @@
+@startuml activity-login
+!theme plain
+skinparam shadowing false
+
+title ForecastPro — Login Activity Diagram
+
+start
+
+:Enter username and password;
+:Submit login form (LoginBean.login);
+
+:AuthService.authenticate(username, password);
+
+if (Credentials valid?) then (yes)
+  if (Account enabled?) then (yes)
+    :UserSessionBean.setCurrentUser(user);
+    if (Role?) then (VENDOR)
+      :Redirect to /vendor/dashboard.xhtml;
+    else (ADMIN / SALES_MANAGER / EMPLOYEE)
+      :Redirect to /app/dashboard.xhtml;
+    endif
+    :SecurityFilter allows role-scoped URLs;
+    stop
+  else (no)
+    :Show error: account disabled;
+    stop
+  endif
+else (no)
+  :Show error: invalid username or password;
+  stop
+endif
+
+@enduml

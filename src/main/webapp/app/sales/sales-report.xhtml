@@ -1,0 +1,100 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Sales — ForecastPro</ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Sales</h1>
+
+        <h:form id="srForm">
+            <p:growl id="srGrowl"/>
+            <p:panel header="Filters" style="margin-bottom:1rem;">
+                <p:panelGrid columns="2" columnClasses="label,value">
+                    <p:outputLabel for="srcat" value="Category"/>
+                    <p:selectOneMenu id="srcat" value="#{salesReportBean.selectedCategoryId}" style="min-width:280px;">
+                        <f:selectItem itemLabel="All categories" itemValue="#{null}"/>
+                        <f:selectItems value="#{salesReportBean.categories}" var="c"
+                                       itemValue="#{c.id}" itemLabel="#{c.name}"/>
+                        <p:ajax listener="#{salesReportBean.onCategoryChange}" process="@this"
+                                update="srProd srGrowl srMainTabs"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="srProd" value="Product"/>
+                    <p:outputPanel id="srProd">
+                        <p:selectOneMenu id="srProdIn" value="#{salesReportBean.selectedProductId}" style="min-width:280px;">
+                            <f:selectItem itemLabel="All products in category" itemValue="#{null}"/>
+                            <f:selectItems value="#{salesReportBean.products}" var="pr"
+                                           itemValue="#{pr.id}" itemLabel="#{pr.name}"/>
+                            <p:ajax listener="#{salesReportBean.refresh}" process="@this"
+                                    update="srGrowl srMainTabs"/>
+                        </p:selectOneMenu>
+                    </p:outputPanel>
+                </p:panelGrid>
+                <p:commandButton value="Refresh" action="#{salesReportBean.refresh}" update="srGrowl srMainTabs"
+                                 icon="pi pi-refresh"/>
+            </p:panel>
+
+            <p:tabView id="srMainTabs">
+                <p:tab title="By month (last 12 months)">
+                    <h:panelGroup layout="block" styleClass="hint" style="margin:0 0 0.75rem 0;">
+                        Rolling window per product and month: #{salesReportBean.monthlyRangeDescription}
+                    </h:panelGroup>
+                    <p:dataTable id="monthlyTable" value="#{salesReportBean.monthlyRows}" var="m"
+                                 paginator="true" rows="20" paginatorPosition="bottom"
+                                 emptyMessage="No sales in this period for the selected filters.">
+                        <p:column headerText="Product" sortBy="#{m.productName}">
+                            <h:outputText value="#{m.productName}"/>
+                        </p:column>
+                        <p:column headerText="Month" sortBy="#{m.monthLabel}">
+                            <h:outputText value="#{m.monthLabel}"/>
+                        </p:column>
+                        <p:column headerText="Quantity sold">
+                            <h:outputText value="#{m.quantitySold}"/>
+                        </p:column>
+                        <p:column headerText="Revenue">
+                            <h:outputText value="#{m.revenue}">
+                                <f:convertNumber type="currency" currencySymbol="₹"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="By year (whole year)">
+                    <h:panelGroup layout="block" styleClass="hint" style="margin:0 0 0.75rem 0;">
+                        Total quantity and revenue for the full calendar year (not split by month).
+                    </h:panelGroup>
+                    <p:panelGrid columns="2" columnClasses="label,value" style="margin-bottom:0.75rem;">
+                        <p:outputLabel for="yr" value="Year"/>
+                        <h:panelGroup>
+                            <p:inputNumber id="yr" value="#{salesReportBean.yearForAnnual}" minValue="2000" maxValue="2100"
+                                           decimalPlaces="0" style="width:8rem;">
+                                <p:ajax event="blur" listener="#{salesReportBean.refresh}" update="srGrowl srMainTabs"/>
+                            </p:inputNumber>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                    <p:dataTable id="yearlyTable" value="#{salesReportBean.yearlyRows}" var="y"
+                                 paginator="true" rows="20" paginatorPosition="bottom"
+                                 emptyMessage="No sales for this year and filters.">
+                        <p:column headerText="Product" sortBy="#{y.productName}">
+                            <h:outputText value="#{y.productName}"/>
+                        </p:column>
+                        <p:column headerText="Year">
+                            <h:outputText value="#{y.year}"/>
+                        </p:column>
+                        <p:column headerText="Quantity sold">
+                            <h:outputText value="#{y.quantitySold}"/>
+                        </p:column>
+                        <p:column headerText="Revenue">
+                            <h:outputText value="#{y.revenue}">
+                                <f:convertNumber type="currency" currencySymbol="₹"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+    </ui:define>
+</ui:composition>

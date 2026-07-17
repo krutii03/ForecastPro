@@ -1,0 +1,56 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Inventory — ForecastPro</ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Inventory</h1>
+
+        <h:form id="invForm" prependId="false">
+            <h:panelGroup id="inventory-alerts" layout="block" rendered="#{userSession.adminOrManager}"
+                          styleClass="module-panel">
+                <h2 style="margin:0 0 0.5rem 0;font-size:1.05rem;font-weight:700;color:#0f172a;">Inventory alerts</h2>
+                <p:dataTable value="#{inventoryBean.inventoryRecommendations}" var="rec"
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             emptyMessage="No forecast data for inventory alerts.">
+                    <p:column headerText="Product">
+                        <h:outputText value="#{rec.productName}"/>
+                    </p:column>
+                    <p:column headerText="Stock" style="width:6rem">
+                        <h:outputText value="#{rec.stockQuantity}"/>
+                    </p:column>
+                    <p:column headerText="Forecast" style="width:7rem">
+                        <h:outputText value="#{rec.forecastDemand}"/>
+                    </p:column>
+                    <p:column headerText="Recommended purchase" style="width:10rem">
+                        <h:outputText value="#{rec.recommendedPurchase}"/>
+                    </p:column>
+                    <p:column headerText="Stock status" style="width:10rem">
+                        <span class="inv-badge #{rec.statusBadgeClass}">
+                            <h:outputText value="#{rec.stockStatus}"/>
+                        </span>
+                    </p:column>
+                    <p:column headerText="Smart recommendation" style="width:12rem">
+                        <span class="inv-badge #{rec.smartBadgeClass}">
+                            <h:outputText value="#{rec.smartRecommendation}"/>
+                        </span>
+                    </p:column>
+                    <p:column headerText="Action" style="width:11rem">
+                        <h:link outcome="/app/stock-requests/stock-requests.xhtml" value="Request stock"
+                                rendered="#{rec.recommendedPurchase gt 0}"
+                                styleClass="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                                style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;padding:0.35rem 0.65rem;font-size:0.85rem;">
+                            <f:param name="categoryId" value="#{rec.categoryId}"/>
+                            <f:param name="productId" value="#{rec.productId}"/>
+                            <f:param name="quantity" value="#{rec.recommendedRestockUnits}"/>
+                        </h:link>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+</ui:composition>

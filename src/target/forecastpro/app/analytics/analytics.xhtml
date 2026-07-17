@@ -1,0 +1,147 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Analytics — ForecastPro</ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Sales analytics</h1>
+
+        <h:form id="analyticsForm">
+            <p:toolbar styleClass="analytics-toolbar analytics-section">
+                <p:toolbarGroup>
+                    <p:commandButton value="Refresh" action="#{analyticsBean.refresh}"
+                                     update="monthlySalesTable categoryTable topSellingTable lowSellingTable productWiseTable analyticsMetrics analyticsCharts"
+                                     icon="pi pi-refresh"/>
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <h:panelGroup id="analyticsMetrics" layout="block" styleClass="ui-fluid">
+                <div class="grid-metrics analytics-section">
+                    <div class="metric-card">
+                        <div class="metric-label">Total revenue</div>
+                        <div class="metric-value">
+                            <h:outputText value="#{analyticsBean.totalRevenue}">
+                                <f:convertNumber type="currency" currencySymbol="₹"/>
+                            </h:outputText>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">
+                            Total predicted revenue (next month:
+                            <h:outputText value="#{analyticsBean.nextForecastMonth}">
+                                <f:convertDateTime type="localDate" pattern="MMMM yyyy"/>
+                            </h:outputText>
+                            )
+                        </div>
+                        <div class="metric-value">
+                            <h:outputText value="#{analyticsBean.totalPredictedRevenue}">
+                                <f:convertNumber type="currency" currencySymbol="₹"/>
+                            </h:outputText>
+                        </div>
+                    </div>
+                </div>
+            </h:panelGroup>
+
+            <h:panelGroup id="analyticsCharts" layout="block" styleClass="ui-fluid">
+                <div class="analytics-chart-row analytics-section">
+                    <p:panel header="Monthly revenue" styleClass="analytics-chart-panel">
+                        <p:lineChart model="#{analyticsBean.monthlyLineModel}"
+                                     style="width:100%;height:240px"/>
+                    </p:panel>
+                    <p:panel header="Revenue by category" styleClass="analytics-chart-panel">
+                        <p:barChart model="#{analyticsBean.categoryBarModel}"
+                                    style="width:100%;height:240px"/>
+                    </p:panel>
+                    <p:panel header="Top products (revenue)" styleClass="analytics-chart-panel">
+                        <p:barChart model="#{analyticsBean.topProductsBarModel}"
+                                    style="width:100%;height:240px"/>
+                    </p:panel>
+                </div>
+            </h:panelGroup>
+
+            <div class="analytics-two-col analytics-section">
+                <p:panel header="Monthly sales">
+                    <p:dataTable id="monthlySalesTable" value="#{analyticsBean.monthly}" var="m"
+                                 paginator="true" rows="10" paginatorPosition="bottom"
+                                 lazy="false" emptyMessage="No data.">
+                        <p:column headerText="Month" styleClass="analytics-col-half">
+                            <h:outputText value="#{m.label}"/>
+                        </p:column>
+                        <p:column headerText="Revenue" styleClass="analytics-col-half">
+                            <h:outputText value="#{m.revenue}">
+                                <f:convertNumber type="currency" currencySymbol="₹"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel header="Category-wise revenue">
+                    <p:dataTable id="categoryTable" value="#{analyticsBean.categoryWise}" var="c"
+                                 paginator="true" rows="10" paginatorPosition="bottom"
+                                 lazy="false" emptyMessage="No data.">
+                        <p:column headerText="Category" styleClass="analytics-col-half">
+                            <h:outputText value="#{c.categoryName}"/>
+                        </p:column>
+                        <p:column headerText="Revenue" styleClass="analytics-col-half">
+                            <h:outputText value="#{c.revenue}">
+                                <f:convertNumber type="currency" currencySymbol="₹"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </div>
+
+            <div class="analytics-two-col analytics-section">
+                <p:panel header="Top selling products">
+                    <p:dataTable id="topSellingTable" value="#{analyticsBean.topSelling}" var="t"
+                                 paginator="true" rows="10" paginatorPosition="bottom"
+                                 lazy="false" emptyMessage="No data.">
+                        <p:column headerText="Product" styleClass="analytics-col-half">
+                            <h:outputText value="#{t.productName}"/>
+                        </p:column>
+                        <p:column headerText="Revenue" styleClass="analytics-col-half">
+                            <h:outputText value="#{t.revenue}">
+                                <f:convertNumber type="currency" currencySymbol="₹"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+                <p:panel header="Low selling products">
+                    <p:dataTable id="lowSellingTable" value="#{analyticsBean.lowSelling}" var="l"
+                                 paginator="true" rows="10" paginatorPosition="bottom"
+                                 lazy="false" emptyMessage="No data.">
+                        <p:column headerText="Product" styleClass="analytics-col-half">
+                            <h:outputText value="#{l.productName}"/>
+                        </p:column>
+                        <p:column headerText="Revenue" styleClass="analytics-col-half">
+                            <h:outputText value="#{l.revenue}">
+                                <f:convertNumber type="currency" currencySymbol="₹"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </div>
+
+            <p:panel header="Product-wise revenue" styleClass="analytics-section analytics-full-table">
+                <p:dataTable id="productWiseTable" value="#{analyticsBean.productWise}" var="pr"
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             lazy="false" emptyMessage="No data.">
+                    <p:column headerText="Product">
+                        <h:outputText value="#{pr.productName}"/>
+                    </p:column>
+                    <p:column headerText="Revenue">
+                        <h:outputText value="#{pr.revenue}">
+                            <f:convertNumber type="currency" currencySymbol="₹"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Quantity sold">
+                        <h:outputText value="#{pr.quantitySold}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

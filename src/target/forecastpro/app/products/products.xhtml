@@ -1,0 +1,78 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Products — ForecastPro</ui:define>
+
+    <ui:define name="metadata">
+        <f:viewAction action="#{productBean.loadCategories}"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Products</h1>
+
+        <h:form id="prodForm">
+            <p:growl id="growl"/>
+            <p:panel id="catPanel" header="Category" style="margin-bottom:1rem;">
+                <p:selectOneMenu id="catSel" value="#{productBean.selectedCategoryId}" style="min-width:280px;">
+                    <f:selectItem itemLabel="— choose category —" itemValue="#{null}"/>
+                    <f:selectItems value="#{productBean.categories}" var="c"
+                                   itemValue="#{c.id}" itemLabel="#{c.name}"/>
+                    <p:ajax listener="#{productBean.loadProducts}" update="prodTable prodFields"/>
+                </p:selectOneMenu>
+                <p:message for="catSel"/>
+            </p:panel>
+
+            <p:outputPanel id="prodFields">
+                <p:panel header="Product details" rendered="#{productBean.selectedCategoryId != null}">
+                    <p:panelGrid columns="2">
+                        <p:outputLabel for="pn" value="Name"/>
+                        <p:inputText id="pn" value="#{productBean.formName}" required="true"/>
+                        <p:outputLabel for="pp" value="Price (₹)"/>
+                        <p:inputNumber id="pp" value="#{productBean.formPrice}" minValue="0" decimalPlaces="2"
+                                       prefix="₹"/>
+                        <p:outputLabel for="ps" value="Stock"/>
+                        <p:inputNumber id="ps" value="#{productBean.formStock}" minValue="0" decimalPlaces="0"/>
+                    </p:panelGrid>
+                    <p:commandButton value="New product" action="#{productBean.prepareNew}" process="@this"
+                                     update="catPanel prodFields prodTable growl"
+                                     icon="pi pi-plus" styleClass="ui-button-secondary" style="margin-right:0.5rem;"/>
+                    <p:commandButton value="Save" action="#{productBean.save}"
+                                     process="catPanel prodFields"
+                                     update="growl prodTable prodFields catPanel"
+                                     icon="pi pi-save"/>
+                </p:panel>
+            </p:outputPanel>
+
+            <p:dataTable id="prodTable" value="#{productBean.products}" var="prod" paginator="true" rows="10"
+                         emptyMessage="No products.">
+                <p:column headerText="Name">
+                    <h:outputText value="#{prod.name}"/>
+                </p:column>
+                <p:column headerText="Price">
+                    <h:outputText value="#{prod.price}">
+                        <f:convertNumber type="currency" currencySymbol="₹"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Stock">
+                    <h:outputText value="#{prod.stockQuantity}"/>
+                </p:column>
+                <p:column headerText="Actions" styleClass="col-actions">
+                    <p:commandButton value="Edit" action="#{productBean.prepareEdit(prod)}"
+                                     process="@this"
+                                     update=":prodForm:catPanel :prodForm:prodFields :prodForm:growl"
+                                     icon="pi pi-pencil"
+                                     styleClass="ui-button-secondary" style="margin-right:0.5rem;"/>
+                    <p:commandButton value="Delete" action="#{productBean.delete(prod)}"
+                                     process="@this"
+                                     update=":prodForm:growl :prodForm:prodTable :prodForm:prodFields"
+                                     icon="pi pi-trash" styleClass="ui-button-danger"
+                                     onclick="return confirm('Delete product?');"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

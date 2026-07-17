@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Categories — ForecastPro</ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Categories</h1>
+
+        <h:form id="catForm">
+            <p:growl id="growl"/>
+            <p:panel header="Add category" style="margin-bottom:1.5rem;">
+                <p:panelGrid columns="2">
+                    <p:outputLabel for="cn" value="Name"/>
+                    <p:inputText id="cn" value="#{categoryBean.newName}" required="true"/>
+                </p:panelGrid>
+                <p:commandButton value="Add" action="#{categoryBean.create}" update="growl catTable" icon="pi pi-plus"/>
+            </p:panel>
+
+            <p:dataTable id="catTable" value="#{categoryBean.categories}" var="c" paginator="true" rows="10">
+                <p:column headerText="Name">
+                    <h:outputText value="#{c.name}"/>
+                </p:column>
+                <p:column headerText="Actions">
+                    <p:commandButton value="Edit" action="#{categoryBean.prepareEdit(c)}" process="@this"
+                                     update=":catForm:editCatPanel" oncomplete="PF('catDlg').show();"
+                                     styleClass="ui-button-secondary" style="margin-right:0.5rem;"/>
+                    <p:commandButton value="Delete" action="#{categoryBean.delete(c)}" process="@this"
+                                     update="growl catTable" styleClass="ui-button-danger"
+                                     onclick="return confirm('Delete this category?');"/>
+                </p:column>
+            </p:dataTable>
+
+            <p:dialog header="Edit category" widgetVar="catDlg" modal="true">
+                <p:outputPanel id="editCatPanel">
+                    <h:panelGroup rendered="#{categoryBean.editing != null}">
+                        <p:inputText value="#{categoryBean.editName}" required="true"/>
+                        <p:commandButton value="Save" action="#{categoryBean.saveEdit}"
+                                         process="editCatPanel"
+                                         oncomplete="PF('catDlg').hide();" update="growl catTable editCatPanel"/>
+                    </h:panelGroup>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

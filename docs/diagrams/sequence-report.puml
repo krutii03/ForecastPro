@@ -1,0 +1,64 @@
+@startuml sequence-report
+!theme plain
+skinparam shadowing false
+
+title ForecastPro — Reports Generation Sequence Diagram
+
+actor User
+participant "ReportsBean" as RB
+participant "SecurityService" as SEC
+participant "SalesReportService" as SRS
+participant "ForecastService" as FS
+participant "SeasonalityService" as SS
+participant "SaleRepository" as SR
+participant "ForecastRepository" as FR
+participant "InventoryMovementRepository" as IMR
+database "MySQL" as DB
+
+User -> RB : open report / Apply Filter
+RB -> SEC : requireAdminOrSalesManager(role)
+SEC --> RB : ok
+
+RB -> RB : syncDateRangeFromTimeMode()\n(fromDate, toDate, category, product)
+
+RB -> SRS : monthlySales(role, categoryId, productId)
+SRS -> SR : monthlySalesByProductFiltered(...)
+SR -> DB : aggregate sales
+DB --> SR : rows
+SR --> SRS : data
+SRS --> RB : salesRows
+
+RB -> FR : findByFilters(from, to, category, product)
+FR -> DB : SELECT forecasts JOIN product
+DB --> FR : forecast rows
+FR --> RB : forecastRows
+
+RB -> IMR : findByFilters(from, to, category, product)
+IMR -> DB : SELECT inventory movements
+DB --> IMR : rows
+IMR --> RB : inventoryRows
+
+RB -> SS : seasonalityReport(role, category, product)
+SS -> SR : monthlyAverageUnitsByProduct(...)
+SR -> DB : seasonal aggregates
+DB --> SR : data
+SR --> SS : seasonality rows
+SS --> RB : seasonalityRows
+
+RB -> FS : computeDashboardKpis(role)
+FS -> FR : findRecent / aggregate
+FR -> DB : forecast KPI data
+DB --> FR : rows
+FR --> FS : kpis
+FS --> RB : forecastKpis
+
+RB -> RB : computeKpisFor(reportType)\nbuildChartsFor(reportType)
+RB --> User : render tables, KPIs, charts
+
+opt Export PDF / Excel
+  User -> RB : exportCurrentPdf() / exportCurrentExcel()
+  RB -> RB : OpenPDF / Apache POI build file
+  RB --> User : download attachment
+end
+
+@enduml

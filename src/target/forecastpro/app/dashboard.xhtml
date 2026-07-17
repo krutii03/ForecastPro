@@ -1,0 +1,114 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Dashboard — ForecastPro</ui:define>
+
+    <ui:define name="metadata">
+        <f:viewAction action="#{dashboardBean.refresh}"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Dashboard</h1>
+
+        <div class="grid-metrics">
+            <h:panelGroup rendered="#{not dashboardBean.employee}">
+                <div class="metric-card">
+                    <div class="metric-label">Total revenue</div>
+                    <div class="metric-value">
+                        <h:outputText value="#{dashboardBean.totalRevenue}">
+                            <f:convertNumber type="currency" currencySymbol="₹"/>
+                        </h:outputText>
+                    </div>
+                </div>
+            </h:panelGroup>
+            <div class="metric-card">
+                <div class="metric-label">Sales records</div>
+                <div class="metric-value">#{dashboardBean.salesCount}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Forecasts stored</div>
+                <div class="metric-value">#{dashboardBean.forecastCount}</div>
+            </div>
+            <h:panelGroup rendered="#{dashboardBean.adminOrManager}">
+                <div class="metric-card">
+                    <div class="metric-label">Low stock (≤10)</div>
+                    <div class="metric-value">#{dashboardBean.lowStockCount}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Inventory alerts</div>
+                    <div class="metric-value">#{dashboardBean.alertCount}</div>
+                </div>
+            </h:panelGroup>
+        </div>
+
+        <div class="dashboard-shortcuts-section">
+            <h2 class="dashboard-shortcuts-heading">Operations</h2>
+            <!-- Inline grid/tile styles so cards render even if app.css is cached or overridden by a theme -->
+            <div id="dashboardShortcuts" class="dashboard-shortcuts-grid"
+                 style="display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:1rem;width:100%;margin:0;padding:0;">
+                <p:outputPanel layout="block" styleClass="dashboard-shortcut-tile"
+                               style="display:block;margin:0;padding:0;background:#fff;border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,0.08);min-width:0;overflow:hidden;"
+                               rendered="#{userSession.admin or userSession.salesManager}">
+                    <a href="#{request.contextPath}/app/analytics/analytics.xhtml" class="dashboard-shortcut-link"
+                       style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;width:100%;min-height:5.75rem;padding:1.1rem 0.85rem;margin:0;box-sizing:border-box;text-decoration:none;color:#1e3a5f;font-weight:600;font-size:0.9rem;text-align:center;line-height:1.25;background:transparent;border:none;">
+                        <span class="dashboard-shortcut-icon pi pi-chart-bar" aria-hidden="true"
+                              style="font-size:1.65rem;color:#2563eb;"/>
+                        <span class="dashboard-shortcut-label" style="display:block;">Analytics</span>
+                    </a>
+                </p:outputPanel>
+                <p:outputPanel layout="block" styleClass="dashboard-shortcut-tile"
+                               style="display:block;margin:0;padding:0;background:#fff;border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,0.08);min-width:0;overflow:hidden;"
+                               rendered="#{userSession.admin or userSession.salesManager}">
+                    <a href="#{request.contextPath}/app/forecast/demand.xhtml" class="dashboard-shortcut-link"
+                       style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;width:100%;min-height:5.75rem;padding:1.1rem 0.85rem;margin:0;box-sizing:border-box;text-decoration:none;color:#1e3a5f;font-weight:600;font-size:0.9rem;text-align:center;line-height:1.25;background:transparent;border:none;">
+                        <span class="dashboard-shortcut-icon pi pi-chart-line" aria-hidden="true"
+                              style="font-size:1.65rem;color:#2563eb;"/>
+                        <span class="dashboard-shortcut-label" style="display:block;">Demand Forecast</span>
+                    </a>
+                </p:outputPanel>
+                <p:outputPanel layout="block" styleClass="dashboard-shortcut-tile"
+                               style="display:block;margin:0;padding:0;background:#fff;border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,0.08);min-width:0;overflow:hidden;"
+                               rendered="#{userSession.admin or userSession.salesManager}">
+                    <a href="#{request.contextPath}/app/forecast/sales.xhtml" class="dashboard-shortcut-link"
+                       style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;width:100%;min-height:5.75rem;padding:1.1rem 0.85rem;margin:0;box-sizing:border-box;text-decoration:none;color:#1e3a5f;font-weight:600;font-size:0.9rem;text-align:center;line-height:1.25;background:transparent;border:none;">
+                        <span class="dashboard-shortcut-icon dashboard-shortcut-rupee" aria-hidden="true"
+                              style="font-size:1.65rem;color:#2563eb;font-weight:700;line-height:1;">₹</span>
+                        <span class="dashboard-shortcut-label" style="display:block;">Sales Forecast</span>
+                    </a>
+                </p:outputPanel>
+                <p:outputPanel layout="block" styleClass="dashboard-shortcut-tile"
+                               style="display:block;margin:0;padding:0;background:#fff;border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,0.08);min-width:0;overflow:hidden;">
+                    <a href="#{request.contextPath}/app/inventory/inventory.xhtml" class="dashboard-shortcut-link"
+                       style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;width:100%;min-height:5.75rem;padding:1.1rem 0.85rem;margin:0;box-sizing:border-box;text-decoration:none;color:#1e3a5f;font-weight:600;font-size:0.9rem;text-align:center;line-height:1.25;background:transparent;border:none;">
+                        <span class="dashboard-shortcut-icon pi pi-database" aria-hidden="true"
+                              style="font-size:1.65rem;color:#2563eb;"/>
+                        <span class="dashboard-shortcut-label" style="display:block;">Inventory</span>
+                    </a>
+                </p:outputPanel>
+                <p:outputPanel layout="block" styleClass="dashboard-shortcut-tile"
+                               style="display:block;margin:0;padding:0;background:#fff;border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,0.08);min-width:0;overflow:hidden;">
+                    <a href="#{request.contextPath}/app/vendors/vendors.xhtml" class="dashboard-shortcut-link"
+                       style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;width:100%;min-height:5.75rem;padding:1.1rem 0.85rem;margin:0;box-sizing:border-box;text-decoration:none;color:#1e3a5f;font-weight:600;font-size:0.9rem;text-align:center;line-height:1.25;background:transparent;border:none;">
+                        <span class="dashboard-shortcut-icon pi pi-building" aria-hidden="true"
+                              style="font-size:1.65rem;color:#2563eb;"/>
+                        <span class="dashboard-shortcut-label" style="display:block;">Vendors</span>
+                    </a>
+                </p:outputPanel>
+                <p:outputPanel layout="block" styleClass="dashboard-shortcut-tile"
+                               style="display:block;margin:0;padding:0;background:#fff;border-radius:8px;border:1px solid #e5e7eb;box-shadow:0 1px 3px rgba(0,0,0,0.08);min-width:0;overflow:hidden;">
+                    <a href="#{request.contextPath}/app/stock-requests/stock-requests.xhtml" class="dashboard-shortcut-link"
+                       style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;width:100%;min-height:5.75rem;padding:1.1rem 0.85rem;margin:0;box-sizing:border-box;text-decoration:none;color:#1e3a5f;font-weight:600;font-size:0.9rem;text-align:center;line-height:1.25;background:transparent;border:none;">
+                        <span class="dashboard-shortcut-icon pi pi-shopping-bag" aria-hidden="true"
+                              style="font-size:1.65rem;color:#2563eb;"/>
+                        <span class="dashboard-shortcut-label" style="display:block;">Stock requests</span>
+                    </a>
+                </p:outputPanel>
+            </div>
+        </div>
+
+    </ui:define>
+</ui:composition>

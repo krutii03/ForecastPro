@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Messages — ForecastPro</ui:define>
+
+    <ui:define name="metadata">
+        <f:viewAction action="#{messageBean.refresh}"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Messages</h1>
+
+        <h:form id="msgForm">
+            <h:panelGroup rendered="#{userSession.employee}" layout="block" styleClass="module-panel" style="margin-bottom:1.25rem;">
+                <p:panel header="New message to admin">
+                    <p:panelGrid columns="2" columnClasses="label,value">
+                        <p:outputLabel for="cs" value="Subject"/>
+                        <p:inputText id="cs" value="#{messageBean.composeSubject}" required="true"/>
+                        <p:outputLabel for="cb" value="Message"/>
+                        <p:inputTextarea id="cb" value="#{messageBean.composeBody}" rows="4" cols="50" required="true"/>
+                    </p:panelGrid>
+                    <p:commandButton value="Send" action="#{messageBean.sendComplaint}" update="msgForm"
+                                     icon="pi pi-send"/>
+                </p:panel>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{userSession.adminOrManager}" layout="block" styleClass="module-panel" style="margin-bottom:1.25rem;">
+                <p:panel header="Send message">
+                    <p:panelGrid columns="2" columnClasses="label,value">
+                        <p:outputLabel for="to" value="To"/>
+                        <p:selectOneMenu id="to" value="#{messageBean.composeRecipientId}" required="true">
+                            <f:selectItem itemLabel="Select user" itemValue="#{null}"/>
+                            <f:selectItems value="#{messageBean.recipients}" var="u"
+                                           itemLabel="#{u.username} (#{u.role})" itemValue="#{u.id}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel for="subj" value="Subject"/>
+                        <p:inputText id="subj" value="#{messageBean.composeSubject}" required="true"/>
+                        <p:outputLabel for="body" value="Message"/>
+                        <p:inputTextarea id="body" value="#{messageBean.composeBody}" rows="4" cols="50" required="true"/>
+                    </p:panelGrid>
+                    <p:commandButton value="Send" action="#{messageBean.sendDirect}" update="msgForm"
+                                     icon="pi pi-send"/>
+                </p:panel>
+            </h:panelGroup>
+
+            <p:outputPanel styleClass="module-panel">
+                <p:dataTable id="messagesTable" value="#{messageBean.messages}" var="msg"
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             lazy="false" emptyMessage="No messages.">
+                    <p:column headerText="Subject" style="width:22%">
+                        <h:outputText value="#{msg.subject}"/>
+                    </p:column>
+                    <p:column headerText="Message">
+                        <h:outputText value="#{msg.body}"/>
+                    </p:column>
+                    <p:column headerText="Sender" style="width:10%">
+                        <h:outputText value="#{msg.sender.username}"/>
+                    </p:column>
+                    <p:column headerText="Receiver" style="width:10%">
+                        <h:outputText value="#{messageBean.recipientName(msg)}"/>
+                    </p:column>
+                    <p:column headerText="Status" style="width:8%">
+                        <span class="#{messageBean.isOpen(msg) ? 'status-pending' : 'status-delivered'}">
+                            <h:outputText value="#{msg.status}"/>
+                        </span>
+                    </p:column>
+                    <p:column headerText="Created" style="width:14%">
+                        <h:outputText value="#{messageBean.formatInstant(msg.createdAt)}"/>
+                    </p:column>
+                    <p:column headerText="" style="width:7rem">
+                        <p:commandButton value="Close" action="#{messageBean.closeMessage(msg)}"
+                                         process="@this" update="messagesTable"
+                                         rendered="#{messageBean.isOpen(msg)}"
+                                         icon="pi pi-check" styleClass="ui-button-secondary"/>
+                    </p:column>
+                </p:dataTable>
+            </p:outputPanel>
+        </h:form>
+    </ui:define>
+</ui:composition>

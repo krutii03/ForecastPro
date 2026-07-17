@@ -1,0 +1,58 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Reports — ForecastPro</ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Reports</h1>
+
+        <div class="reports-page reports-section module-panel reports-type-section">
+            <h2 class="reports-section-title">Available reports</h2>
+            <div class="reports-type-grid">
+                <div class="reports-type-tile">
+                    <h:link outcome="/app/reports/sales-report.xhtml" styleClass="reports-type-tile-link">
+                        <span class="pi pi-shopping-cart reports-type-card-icon" aria-hidden="true"/>
+                        <span class="reports-type-card-title">Sales Report</span>
+                    </h:link>
+                </div>
+                <div class="reports-type-tile">
+                    <h:link outcome="/app/reports/inventory-report.xhtml" styleClass="reports-type-tile-link">
+                        <span class="pi pi-database reports-type-card-icon" aria-hidden="true"/>
+                        <span class="reports-type-card-title">Inventory Report</span>
+                    </h:link>
+                </div>
+                <div class="reports-type-tile">
+                    <h:link outcome="/app/reports/forecast-report.xhtml" styleClass="reports-type-tile-link">
+                        <span class="pi pi-chart-line reports-type-card-icon" aria-hidden="true"/>
+                        <span class="reports-type-card-title">Forecast Report</span>
+                    </h:link>
+                </div>
+                <div class="reports-type-tile">
+                    <h:link outcome="/app/reports/product-performance-report.xhtml" styleClass="reports-type-tile-link">
+                        <span class="pi pi-box reports-type-card-icon" aria-hidden="true"/>
+                        <span class="reports-type-card-title">Product Performance</span>
+                    </h:link>
+                </div>
+                <div class="reports-type-tile">
+                    <h:link outcome="/app/reports/category-report.xhtml" styleClass="reports-type-tile-link">
+                        <span class="pi pi-tags reports-type-card-icon" aria-hidden="true"/>
+                        <span class="reports-type-card-title">Category Report</span>
+                    </h:link>
+                </div>
+                <div class="reports-type-tile">
+                    <h:link outcome="/app/reports/seasonality-report.xhtml" styleClass="reports-type-tile-link">
+                        <span class="pi pi-sun reports-type-card-icon" aria-hidden="true"/>
+                        <span class="reports-type-card-title">Seasonality Report</span>
+                    </h:link>
+                </div>
+            </div>
+        </div>
+
+        <h:form id="hubForm" styleClass="reports-page">
+            <ui:include src="_report-overview.xhtml"/>
+        </h:form>
+    </ui:define>
+</ui:composition>

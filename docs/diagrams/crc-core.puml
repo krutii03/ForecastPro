@@ -1,0 +1,39 @@
+@startuml crc-core
+!theme plain
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F8FAFC
+  BorderColor #1E3A5F
+}
+
+title ForecastPro — CRC Cards (Core Domain)
+
+class "User\n----\nResponsibilities:\n• Store login credentials (BCrypt)\n• Represent system role (ADMIN, SALES_MANAGER,\n  EMPLOYEE, VENDOR)\n• Enable/disable account access\n----\nCollaborators:\n• Vendor\n• Message (sender/receiver)" as CRC_User
+
+class "Category\n----\nResponsibilities:\n• Group products for analytics and UI\n• Enforce unique category name\n----\nCollaborators:\n• Product" as CRC_Category
+
+class "Product\n----\nResponsibilities:\n• Store SKU name, price, stock quantity\n• Link to one category\n• Track sales and forecast history\n----\nCollaborators:\n• Category\n• Sale\n• Forecast\n• InventoryMovement\n• StockRequest" as CRC_Product
+
+class "Sale\n----\nResponsibilities:\n• Record quantity sold per date\n• Provide input for forecasting & analytics\n----\nCollaborators:\n• Product\n• SaleService\n• SaleRepository" as CRC_Sale
+
+class "Forecast\n----\nResponsibilities:\n• Store MA + regression components\n• Store predicted sales/revenue & bounds\n• One forecast per product per month\n----\nCollaborators:\n• Product\n• ForecastService\n• ForecastRepository" as CRC_Forecast
+
+class "InventoryMovement\n(table: inventory)\n----\nResponsibilities:\n• Log stock additions (vendor delivery, etc.)\n• Audit inventory receipt history\n----\nCollaborators:\n• Product\n• StockRequestService\n• InventoryMovementRepository" as CRC_Inventory
+
+class "Vendor\n----\nResponsibilities:\n• Represent external supplier profile\n• Link to VENDOR login user\n• Track ACTIVE/INACTIVE status\n----\nCollaborators:\n• User\n• StockRequest\n• VendorService" as CRC_Vendor
+
+class "StockRequest\n----\nResponsibilities:\n• Request restock from vendor\n• Track fulfilment workflow status\n• Trigger inventory update when completed\n----\nCollaborators:\n• Product\n• Vendor\n• StockRequestService\n• InventoryMovement" as CRC_StockRequest
+
+class "Message\n----\nResponsibilities:\n• Internal messaging between users\n• Track OPEN/CLOSED status\n• Support admin, employee, vendor comms\n----\nCollaborators:\n• User (sender)\n• User (receiver)\n• MessageService" as CRC_Message
+
+CRC_User -[hidden]down- CRC_Category
+CRC_Category -[hidden]down- CRC_Product
+CRC_Product -[hidden]down- CRC_Sale
+CRC_Sale -[hidden]down- CRC_Forecast
+CRC_Forecast -[hidden]down- CRC_Inventory
+CRC_Inventory -[hidden]down- CRC_Vendor
+CRC_Vendor -[hidden]down- CRC_StockRequest
+CRC_StockRequest -[hidden]down- CRC_Message
+
+@enduml

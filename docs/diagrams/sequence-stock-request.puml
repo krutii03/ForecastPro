@@ -1,0 +1,64 @@
+@startuml sequence-stock-request
+!theme plain
+skinparam shadowing false
+
+title ForecastPro — Stock Request Lifecycle Sequence Diagram
+
+actor "Admin / Manager" as Admin
+actor Vendor
+participant "StockRequestBean" as SRB
+participant "VendorRequestsBean" as VRB
+participant "StockRequestService" as SRS
+participant "VendorRepository" as VR
+participant "StockRequestRepository" as SRR
+participant "ProductRepository" as PR
+participant "InventoryMovementRepository" as IMR
+database "MySQL" as DB
+
+== Create Request ==
+Admin -> SRB : select product, vendor, qty\nSubmit
+SRB -> SRS : create(role, requesterId, productId, vendorId, qty)
+SRS -> PR : findById(productId)
+PR -> DB : SELECT product
+DB --> PR : ok
+SRS -> VR : findById(vendorId)
+VR -> DB : SELECT vendor
+DB --> VR : ok
+SRS -> SRR : save(StockRequest PENDING)
+SRR -> DB : INSERT stock_requests
+DB --> SRR : ok
+SRS --> SRB : done
+SRB --> Admin : show success
+
+== Vendor Fulfilment ==
+Vendor -> VRB : Accept / Pack / Ship / Deliver
+VRB -> SRS : transitionStatus(VENDOR, userId, id, nextStatus)
+SRS -> SRR : findByIdFetched(id)
+SRR -> DB : SELECT request JOIN vendor
+DB --> SRR : request
+SRS -> SRS : validate vendor owns request\nvalidate transition
+SRS -> SRR : save(updated status)
+SRR -> DB : UPDATE stock_requests.status
+DB --> SRR : ok
+SRS --> VRB : done
+VRB --> Vendor : refresh table
+
+== Admin Receipt ==
+Admin -> SRB : Add to Stock (DELIVERED)
+SRB -> SRS : addToInventory(ADMIN, userId, requestId)
+SRS -> SRR : findByIdFetched(id)
+SRR -> DB : SELECT request
+DB --> SRR : DELIVERED request
+SRS -> PR : adjustStock(productId, qty)
+PR -> DB : UPDATE products.stock_quantity
+DB --> PR : ok
+SRS -> IMR : save(InventoryMovement)
+IMR -> DB : INSERT inventory
+DB --> IMR : ok
+SRS -> SRR : save(status = COMPLETED)
+SRR -> DB : UPDATE stock_requests
+DB --> SRR : ok
+SRS --> SRB : done
+SRB --> Admin : show success
+
+@enduml

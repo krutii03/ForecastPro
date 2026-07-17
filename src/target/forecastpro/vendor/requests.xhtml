@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/vendor-main.xhtml">
+
+    <ui:define name="title">My stock requests — ForecastPro</ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title vendor-page-title">Stock requests</h1>
+
+        <h:form id="vrForm">
+            <p:growl id="vrGrowl" showDetail="true"/>
+            <p:outputPanel id="vrTable" layout="block" styleClass="module-panel vendor-requests-panel">
+                <p:dataTable value="#{vendorRequestsBean.requests}" var="r" paginator="true" rows="12"
+                             styleClass="vendor-requests-datatable"
+                             emptyMessage="No requests for your vendor account.">
+                    <p:column headerText="Product">
+                        <h:outputText value="#{r.product.name}"/>
+                    </p:column>
+                    <p:column headerText="Quantity" style="width:6rem">
+                        <h:outputText value="#{r.requestedQuantity}"/>
+                    </p:column>
+                    <p:column headerText="Status" style="width:11rem">
+                        <span class="#{vendorRequestsBean.statusStyleClass(r.status)}">
+                            <h:outputText value="#{r.status}"/>
+                        </span>
+                    </p:column>
+                    <p:column headerText="Date" style="width:12rem">
+                        <h:outputText value="#{r.requestDate}">
+                            <f:convertDateTime type="localDate" pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Actions" style="width:22rem">
+                        <h:panelGroup rendered="#{userSession.vendor}">
+                            <p:commandButton value="Accept" process="@this"
+                                             action="#{vendorRequestsBean.updateStatus(r, 'APPROVED')}"
+                                             update="@form"
+                                             rendered="#{r.status ne null and r.status.name() eq 'PENDING'}"
+                                             icon="pi pi-check" styleClass="ui-button-success" style="margin:0.15rem;"/>
+                            <p:commandButton value="Reject" process="@this"
+                                             action="#{vendorRequestsBean.updateStatus(r, 'REJECTED')}"
+                                             update="@form"
+                                             rendered="#{r.status ne null and r.status.name() eq 'PENDING'}"
+                                             icon="pi pi-times" styleClass="ui-button-danger" style="margin:0.15rem;"/>
+                            <p:commandButton value="Ready &amp; packed" process="@this"
+                                             action="#{vendorRequestsBean.updateStatus(r, 'READY_PACKED')}"
+                                             update="@form"
+                                             rendered="#{r.status ne null and r.status.name() eq 'APPROVED'}"
+                                             icon="pi pi-box" styleClass="ui-button-secondary" style="margin:0.15rem;"/>
+                            <p:commandButton value="Out for delivery" process="@this"
+                                             action="#{vendorRequestsBean.updateStatus(r, 'OUT_FOR_DELIVERY')}"
+                                             update="@form"
+                                             rendered="#{r.status ne null and r.status.name() eq 'READY_PACKED'}"
+                                             icon="pi pi-send" styleClass="ui-button-secondary" style="margin:0.15rem;"/>
+                            <p:commandButton value="Delivered" process="@this"
+                                             action="#{vendorRequestsBean.updateStatus(r, 'DELIVERED')}"
+                                             update="@form"
+                                             rendered="#{r.status ne null and r.status.name() eq 'OUT_FOR_DELIVERY'}"
+                                             icon="pi pi-truck" styleClass="ui-button-secondary" style="margin:0.15rem;"/>
+                        </h:panelGroup>
+                    </p:column>
+                </p:dataTable>
+            </p:outputPanel>
+        </h:form>
+    </ui:define>
+</ui:composition>

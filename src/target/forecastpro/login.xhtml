@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>ForecastPro — Login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <h:outputStylesheet library="css" name="app.css"/>
+</h:head>
+<h:body styleClass="login-page">
+    <div class="login-shell">
+        <div class="login-panel">
+            <div class="login-brand">
+                <h:graphicImage library="images" name="logo2.png" alt="ForecastPro" styleClass="login-logo"/>
+                <p class="login-tagline">Sales Analysis &amp; Demand Forecasting</p>
+            </div>
+
+            <p:card styleClass="login-card">
+                <h:form id="loginForm">
+                    <p:growl id="growl" showDetail="true" life="5000"/>
+                    <h2 class="login-heading">Sign in to your account</h2>
+                    <p class="login-subheading">Enter your credentials to continue</p>
+
+                    <div class="login-field">
+                        <p:outputLabel for="user" value="Username" styleClass="login-label"/>
+                        <p:inputText id="user" value="#{loginBean.username}"
+                                     placeholder="Enter username"
+                                     required="true" requiredMessage="Username required"
+                                     styleClass="login-input"/>
+                    </div>
+
+                    <div class="login-field">
+                        <p:outputLabel for="pwd" value="Password" styleClass="login-label"/>
+                        <p:password id="pwd" value="#{loginBean.password}"
+                                    placeholder="Enter password"
+                                    required="true" requiredMessage="Password required"
+                                    feedback="false" styleClass="login-input"/>
+                    </div>
+
+                    <p:commandButton value="Login" action="#{loginBean.login}"
+                                     update="growl" icon="pi pi-sign-in"
+                                     styleClass="login-submit"/>
+                </h:form>
+            </p:card>
+        </div>
+    </div>
+</h:body>
+</html>

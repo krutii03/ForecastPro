@@ -1,0 +1,53 @@
+@startuml sequence-forecast
+!theme plain
+skinparam shadowing false
+
+title ForecastPro — Forecast Generation Sequence Diagram
+
+actor User
+participant "DemandForecastBean" as DFB
+participant "ForecastService" as FS
+participant "SecurityService" as SEC
+participant "SaleRepository" as SR
+participant "MovingAverageForecaster" as MAF
+participant "SimpleRegression\n(Commons Math)" as REG
+participant "StandardDeviation\n(Commons Math)" as SD
+participant "ProductRepository" as PR
+participant "ForecastRepository" as FR
+database "MySQL" as DB
+
+User -> DFB : select product, click Generate
+DFB -> FS : generateForecast(role, productId)
+FS -> SEC : requireAdminOrSalesManager(role)
+SEC --> FS : ok
+
+FS -> SR : monthlyQuantityByProductNative(productId)
+SR -> DB : GROUP BY year/month quantity
+DB --> SR : monthly series
+SR --> FS : List<BigDecimal>
+
+FS -> MAF : forecast(series, window=3)
+MAF --> FS : movingAvg
+
+FS -> REG : addData(monthIndex, qty)\npredict(n)
+REG --> FS : regressionRaw
+FS -> FS : clamp regression ±20% MA\n70% MA + 30% regression
+
+FS -> PR : findById(productId)
+PR -> DB : SELECT product
+DB --> PR : product + price
+PR --> FS : Product
+
+FS -> FS : predictedRevenue = units × price
+FS -> SD : evaluate(monthly quantities)
+SD --> FS : sigma (bounds)
+
+FS -> FR : findByProductAndMonth / save(forecast)
+FR -> DB : INSERT/UPDATE forecasts
+DB --> FR : ok
+FR --> FS : Forecast
+FS --> DFB : Forecast
+DFB -> DFB : buildChartModels()
+DFB --> User : display KPIs, charts, history
+
+@enduml

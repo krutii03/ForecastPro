@@ -1,0 +1,43 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/WEB-INF/template/vendor-main.xhtml">
+
+    <ui:define name="title">Vendor dashboard — ForecastPro</ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title vendor-page-title">Vendor dashboard</h1>
+
+        <div class="grid-metrics vendor-dash-metrics">
+            <div class="metric-card">
+                <div class="metric-label">Total requests</div>
+                <div class="metric-value">#{vendorDashboardBean.totalRequests}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Pending</div>
+                <div class="metric-value">#{vendorDashboardBean.pendingRequests}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Active</div>
+                <div class="metric-value">#{vendorDashboardBean.activeFulfillment}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Awaiting warehouse</div>
+                <div class="metric-value">#{vendorDashboardBean.awaitingWarehouseReceipt}</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Received</div>
+                <div class="metric-value">#{vendorDashboardBean.receivedRequests}</div>
+            </div>
+        </div>
+
+        <p class="vendor-dash-actions">
+            <h:link outcome="/vendor/requests.xhtml" styleClass="vendor-primary-btn" style="margin-right:0.75rem;">
+                View stock requests
+            </h:link>
+            <h:link outcome="/vendor/messages.xhtml" styleClass="vendor-primary-btn">
+                Messages
+            </h:link>
+        </p>
+    </ui:define>
+</ui:composition>

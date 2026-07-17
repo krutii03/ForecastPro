@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Sales entry — ForecastPro</ui:define>
+
+    <ui:define name="metadata">
+        <f:viewAction action="#{saleBean.loadCategories}"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Sales entry</h1>
+
+        <h:form id="saleForm">
+            <p:growl id="growl"/>
+            <p:panel header="Record sale">
+                <p:panelGrid columns="2" columnClasses="label,value">
+                    <p:outputLabel for="sc" value="Category"/>
+                    <p:selectOneMenu id="sc" value="#{saleBean.selectedCategoryId}" style="min-width:280px;">
+                        <f:selectItem itemLabel="— choose —" itemValue="#{null}"/>
+                        <f:selectItems value="#{saleBean.categories}" var="c"
+                                       itemValue="#{c.id}" itemLabel="#{c.name}"/>
+                        <p:ajax listener="#{saleBean.loadProducts}" update="sp"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="sp" value="Product"/>
+                    <p:selectOneMenu id="sp" value="#{saleBean.selectedProductId}" style="min-width:280px;">
+                        <f:selectItem itemLabel="— choose —" itemValue="#{null}"/>
+                        <f:selectItems value="#{saleBean.products}" var="pr"
+                                       itemValue="#{pr.id}" itemLabel="#{pr.name}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="sq" value="Quantity sold"/>
+                    <p:inputNumber id="sq" value="#{saleBean.quantitySold}" minValue="1" decimalPlaces="0"/>
+
+                    <p:outputLabel for="sd" value="Sale date"/>
+                    <p:datePicker id="sd" value="#{saleBean.saleDate}" pattern="dd/MM/yyyy"
+                                  showButtonBar="true" showIcon="true"
+                                  maxdate="#{saleBean.maxSaleDate}" showMinMaxRange="true"/>
+                </p:panelGrid>
+                <p:commandButton value="Save sale" action="#{saleBean.recordSale}" update="growl sp"
+                                 icon="pi pi-check"/>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>

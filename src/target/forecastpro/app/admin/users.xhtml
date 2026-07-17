@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Users — ForecastPro</ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">User management</h1>
+        <h:form id="userForm">
+            <p:growl id="growl"/>
+            <p:panel header="Create user" style="margin-bottom:1.5rem;">
+                <p:panelGrid columns="2" columnClasses="label,value">
+                    <p:outputLabel for="nu" value="Username"/>
+                    <p:inputText id="nu" value="#{userManagementBean.newUsername}" required="true"/>
+                    <p:outputLabel for="np" value="Password"/>
+                    <p:password id="np" value="#{userManagementBean.newPassword}" required="true" feedback="false"/>
+                    <p:outputLabel for="nr" value="Role"/>
+                    <p:selectOneMenu id="nr" value="#{userManagementBean.newRole}">
+                        <f:selectItems value="#{userManagementBean.allRoles}" var="r"
+                                       itemValue="#{r}" itemLabel="#{r}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel for="ne" value="Enabled"/>
+                    <p:selectBooleanCheckbox id="ne" value="#{userManagementBean.newEnabled}"/>
+                </p:panelGrid>
+                <p:commandButton value="Create" action="#{userManagementBean.createUser}" update="growl usersTable"
+                                 icon="pi pi-plus"/>
+            </p:panel>
+
+            <p:dataTable id="usersTable" value="#{userManagementBean.users}" var="u" paginator="true" rows="10">
+                <p:column headerText="Username">
+                    <h:outputText value="#{u.username}"/>
+                </p:column>
+                <p:column headerText="Role">
+                    <h:outputText value="#{u.role}"/>
+                </p:column>
+                <p:column headerText="Enabled">
+                    <h:outputText value="#{u.enabled ? 'Yes' : 'No'}"/>
+                </p:column>
+                <p:column headerText="Actions">
+                    <p:commandButton value="Edit" action="#{userManagementBean.prepareEdit(u)}" process="@this"
+                                     update=":userForm:editPanel" oncomplete="PF('editDlg').show();"/>
+                </p:column>
+            </p:dataTable>
+
+            <p:dialog header="Edit user" widgetVar="editDlg" modal="true" resizable="false">
+                <p:outputPanel id="editPanel">
+                    <h:panelGroup rendered="#{userManagementBean.editingUser != null}">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Username"/>
+                            <h:outputText value="#{userManagementBean.editingUser.username}"/>
+                            <p:outputLabel for="er" value="Role"/>
+                            <p:selectOneMenu id="er" value="#{userManagementBean.editRole}">
+                                <f:selectItems value="#{userManagementBean.allRoles}" var="r"
+                                               itemValue="#{r}" itemLabel="#{r}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel for="ee" value="Enabled"/>
+                            <p:selectBooleanCheckbox id="ee" value="#{userManagementBean.editEnabled}"/>
+                        </p:panelGrid>
+                        <p:commandButton value="Save" action="#{userManagementBean.saveEdit}"
+                                         process="editPanel"
+                                         oncomplete="PF('editDlg').hide();" update="growl usersTable editPanel"/>
+                    </h:panelGroup>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

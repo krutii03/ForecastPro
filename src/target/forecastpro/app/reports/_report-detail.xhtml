@@ -1,0 +1,210 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="rForm" styleClass="reports-page">
+        <div class="reports-section module-panel reports-filters-panel">
+            <h2 class="reports-section-title">Filters</h2>
+            <h:panelGroup layout="block" rendered="#{!reportsBean.reportShows('SEASONALITY')}">
+            <div class="reports-filter-row reports-filter-grid">
+                <div class="reports-filter-col">
+                    <span class="reports-filter-label">Time Filter</span>
+                    <p:selectOneButton id="timeModeBtn" value="#{reportsBean.timeMode}" styleClass="reports-time-toggle">
+                        <f:selectItem itemLabel="Monthly" itemValue="MONTHLY"/>
+                        <f:selectItem itemLabel="Yearly" itemValue="YEARLY"/>
+                        <f:selectItem itemLabel="Custom" itemValue="RANGE"/>
+                        <p:ajax listener="#{reportsBean.onTimeModeChange}" update="reportsRangeDisplay timeSlotPanel"/>
+                    </p:selectOneButton>
+                </div>
+                <div class="reports-filter-col reports-filter-col--range">
+                    <span class="reports-filter-label">Selected Range</span>
+                    <h:panelGroup id="reportsRangeDisplay" layout="block" styleClass="reports-range-muted">
+                        #{reportsBean.rangeDisplay}
+                    </h:panelGroup>
+                </div>
+            </div>
+            </h:panelGroup>
+            <div class="reports-filter-row reports-filter-grid">
+                <h:panelGroup layout="block" styleClass="reports-filter-col" rendered="#{!reportsBean.reportShows('SEASONALITY')}">
+                    <h:panelGroup id="timeSlotPanel" layout="block">
+                    <h:panelGroup rendered="#{reportsBean.monthlyMode}">
+                        <span class="reports-filter-label">Month &amp; Year</span>
+                        <div class="reports-filter-inline">
+                            <p:selectOneMenu value="#{reportsBean.selectedMonth}" styleClass="reports-filter-select reports-filter-select--month">
+                                <f:selectItem itemLabel="January" itemValue="1"/>
+                                <f:selectItem itemLabel="February" itemValue="2"/>
+                                <f:selectItem itemLabel="March" itemValue="3"/>
+                                <f:selectItem itemLabel="April" itemValue="4"/>
+                                <f:selectItem itemLabel="May" itemValue="5"/>
+                                <f:selectItem itemLabel="June" itemValue="6"/>
+                                <f:selectItem itemLabel="July" itemValue="7"/>
+                                <f:selectItem itemLabel="August" itemValue="8"/>
+                                <f:selectItem itemLabel="September" itemValue="9"/>
+                                <f:selectItem itemLabel="October" itemValue="10"/>
+                                <f:selectItem itemLabel="November" itemValue="11"/>
+                                <f:selectItem itemLabel="December" itemValue="12"/>
+                                <p:ajax listener="#{reportsBean.onMonthYearChange}" update="reportsRangeDisplay"/>
+                            </p:selectOneMenu>
+                            <p:selectOneMenu value="#{reportsBean.selectedYear}" styleClass="reports-filter-select reports-filter-select--year">
+                                <f:selectItems value="#{reportsBean.yearOptions}" var="y" itemValue="#{y}" itemLabel="#{y}"/>
+                                <p:ajax listener="#{reportsBean.onMonthYearChange}" update="reportsRangeDisplay"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{reportsBean.yearlyMode}">
+                        <span class="reports-filter-label">Year</span>
+                        <p:selectOneMenu value="#{reportsBean.selectedYear}" styleClass="reports-filter-select">
+                            <f:selectItems value="#{reportsBean.yearOptions}" var="y" itemValue="#{y}" itemLabel="#{y}"/>
+                            <p:ajax listener="#{reportsBean.onYearChange}" update="reportsRangeDisplay"/>
+                        </p:selectOneMenu>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{reportsBean.rangeMode}">
+                        <span class="reports-filter-label">Custom range</span>
+                        <div class="reports-filter-inline">
+                            <p:datePicker value="#{reportsBean.fromDate}" pattern="dd/MM/yyyy"
+                                          styleClass="reports-filter-date" placeholder="From">
+                                <f:convertDateTime type="localDate" pattern="dd/MM/yyyy"/>
+                            </p:datePicker>
+                            <p:datePicker value="#{reportsBean.toDate}" pattern="dd/MM/yyyy"
+                                          styleClass="reports-filter-date" placeholder="To">
+                                <f:convertDateTime type="localDate" pattern="dd/MM/yyyy"/>
+                            </p:datePicker>
+                        </div>
+                    </h:panelGroup>
+                    </h:panelGroup>
+                </h:panelGroup>
+                <div class="reports-filter-col">
+                    <span class="reports-filter-label">Category</span>
+                    <p:selectOneMenu value="#{reportsBean.selectedCategoryId}" styleClass="reports-filter-select">
+                        <f:selectItem itemLabel="All categories" itemValue="#{null}"/>
+                        <f:selectItems value="#{reportsBean.categories}" var="c"
+                                       itemLabel="#{c.name}" itemValue="#{c.id}"/>
+                        <p:ajax listener="#{reportsBean.onCategoryChange}" update="productSelect"/>
+                    </p:selectOneMenu>
+                </div>
+            </div>
+            <div class="reports-filter-row reports-filter-grid reports-filter-row--last">
+                <div class="reports-filter-col">
+                    <span class="reports-filter-label">Product</span>
+                    <p:selectOneMenu id="productSelect" value="#{reportsBean.selectedProductId}" styleClass="reports-filter-select">
+                        <f:selectItem itemLabel="All products" itemValue="#{null}"/>
+                        <f:selectItems value="#{reportsBean.products}" var="prod"
+                                       itemLabel="#{prod.name}" itemValue="#{prod.id}"/>
+                    </p:selectOneMenu>
+                </div>
+                <div class="reports-filter-col reports-filter-col--actions">
+                    <span class="reports-filter-label reports-filter-label--invisible">Apply</span>
+                    <p:commandButton value="Apply Filter" icon="pi pi-filter"
+                                     action="#{reportsBean.applyFilters}" process="@form" update="@form"
+                                     styleClass="reports-apply-btn"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="reports-section module-panel">
+            <h2 class="reports-section-title">Details</h2>
+            <p:toolbar styleClass="reports-toolbar" style="margin-bottom:1rem;">
+                <p:toolbarGroup>
+                    <p:commandButton value="Export PDF" icon="pi pi-file-pdf" ajax="false" immediate="true"
+                                     action="#{reportsBean.exportCurrentPdf}"/>
+                    <p:commandButton value="Export Excel" icon="pi pi-file-excel" ajax="false" immediate="true"
+                                     styleClass="ui-button-success" action="#{reportsBean.exportCurrentExcel}"/>
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <h:panelGroup rendered="#{reportsBean.reportShows('SALES')}" layout="block">
+                <h3 class="reports-table-heading">Sales summary</h3>
+                <p:dataTable value="#{reportsBean.salesRows}" var="r"
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             emptyMessage="No sales data.">
+                    <p:column headerText="Product"><h:outputText value="#{r.productName}"/></p:column>
+                    <p:column headerText="Month"><h:outputText value="#{r.monthLabel}"/></p:column>
+                    <p:column headerText="Qty"><h:outputText value="#{r.quantitySold}"/></p:column>
+                    <p:column headerText="Revenue">
+                        <h:outputText value="#{r.revenue}">
+                            <f:convertNumber type="currency" currencySymbol="₹"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{reportsBean.reportShows('FORECAST')}" layout="block" styleClass="reports-table-block">
+                <h3 class="reports-table-heading">Forecast summary</h3>
+                <p:dataTable value="#{reportsBean.forecastRows}" var="fc"
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             emptyMessage="No forecast data.">
+                    <p:column headerText="Product"><h:outputText value="#{fc.product.name}"/></p:column>
+                    <p:column headerText="Month">
+                        <h:outputText value="#{reportsBean.formatReportDate(fc.forecastMonth)}"/>
+                    </p:column>
+                    <p:column headerText="Predicted units"><h:outputText value="#{fc.predictedSales}"/></p:column>
+                    <p:column headerText="Confidence range">
+                        <h:outputText value="#{fc.lowerBound}"/> — <h:outputText value="#{fc.upperBound}"/>
+                    </p:column>
+                    <p:column headerText="Predicted revenue">
+                        <h:outputText value="#{fc.predictedRevenue}">
+                            <f:convertNumber type="currency" currencySymbol="₹"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{reportsBean.reportShows('INVENTORY')}" layout="block" styleClass="reports-table-block">
+                <h3 class="reports-table-heading">Inventory summary</h3>
+                <p:dataTable value="#{reportsBean.inventoryRows}" var="inv"
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             emptyMessage="No inventory movements.">
+                    <p:column headerText="Date">
+                        <h:outputText value="#{reportsBean.formatReportDate(inv.dateAdded)}"/>
+                    </p:column>
+                    <p:column headerText="Product"><h:outputText value="#{inv.product.name}"/></p:column>
+                    <p:column headerText="Qty added"><h:outputText value="#{inv.quantityAdded}"/></p:column>
+                    <p:column headerText="Vendor"><h:outputText value="#{reportsBean.inventoryVendorLabel(inv)}"/></p:column>
+                </p:dataTable>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{reportsBean.reportShows('PRODUCT_PERFORMANCE')}" layout="block" styleClass="reports-table-block">
+                <h3 class="reports-table-heading">Product performance</h3>
+                <p:dataTable value="#{reportsBean.productPerfRows}" var="pr"
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             emptyMessage="No product performance data.">
+                    <p:column headerText="Product"><h:outputText value="#{pr.productName}"/></p:column>
+                    <p:column headerText="Revenue">
+                        <h:outputText value="#{pr.revenue}">
+                            <f:convertNumber type="currency" currencySymbol="₹"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Qty sold"><h:outputText value="#{pr.quantitySold}"/></p:column>
+                </p:dataTable>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{reportsBean.reportShows('CATEGORY')}" layout="block" styleClass="reports-table-block">
+                <h3 class="reports-table-heading">Category summary</h3>
+                <p:dataTable value="#{reportsBean.categoryRows}" var="cat"
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             emptyMessage="No category data.">
+                    <p:column headerText="Category"><h:outputText value="#{cat.categoryName}"/></p:column>
+                    <p:column headerText="Revenue">
+                        <h:outputText value="#{cat.revenue}">
+                            <f:convertNumber type="currency" currencySymbol="₹"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{reportsBean.reportShows('SEASONALITY')}" layout="block" styleClass="reports-table-block">
+                <h3 class="reports-table-heading">Seasonality analysis</h3>
+                <p:dataTable value="#{reportsBean.seasonalityRows}" var="sea"
+                             paginator="true" rows="10" paginatorPosition="bottom"
+                             emptyMessage="No seasonality data.">
+                    <p:column headerText="Product"><h:outputText value="#{sea.productName}"/></p:column>
+                    <p:column headerText="Best month"><h:outputText value="#{sea.bestMonth}"/></p:column>
+                    <p:column headerText="Worst month"><h:outputText value="#{sea.worstMonth}"/></p:column>
+                    <p:column headerText="Avg monthly sales"><h:outputText value="#{sea.averageMonthlySales}"/></p:column>
+                </p:dataTable>
+            </h:panelGroup>
+        </div>
+    </h:form>
+</ui:composition>

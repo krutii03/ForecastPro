@@ -1,0 +1,39 @@
+@startuml employee-usecase
+!theme plain
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F8FAFC
+  BorderColor #1E3A5F
+  FontColor #1F2933
+}
+skinparam actor {
+  BackgroundColor #E8F0FE
+  BorderColor #1E3A5F
+}
+
+left to right direction
+
+actor "Employee" as Employee
+
+rectangle "ForecastPro" {
+  usecase "Login" as UC_Login
+  usecase "View Products" as UC_ViewProducts
+  usecase "Record Sales" as UC_RecordSales
+  usecase "View Inventory" as UC_ViewInventory
+  usecase "View Vendors" as UC_ViewVendors
+  usecase "Create Stock Requests" as UC_CreateStockRequests
+  usecase "Send Messages" as UC_SendMessages
+  usecase "Logout" as UC_Logout
+}
+
+Employee --> UC_Login
+Employee --> UC_ViewProducts
+Employee --> UC_RecordSales
+Employee --> UC_ViewInventory
+Employee --> UC_ViewVendors
+Employee --> UC_CreateStockRequests
+Employee --> UC_SendMessages
+Employee --> UC_Logout
+
+@enduml

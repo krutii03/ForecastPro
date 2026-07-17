@@ -1,0 +1,166 @@
+@startuml class-core
+!theme plain
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F8FAFC
+  BorderColor #1E3A5F
+  ArrowColor #1E3A5F
+}
+
+title ForecastPro — Core Domain Model (JPA Entities)
+
+enum UserRole {
+  ADMIN
+  SALES_MANAGER
+  EMPLOYEE
+  VENDOR
+}
+
+enum StockRequestStatus {
+  PENDING
+  APPROVED
+  READY_PACKED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  COMPLETED
+}
+
+enum MessageStatus {
+  OPEN
+  CLOSED
+  RESOLVED
+}
+
+class User {
+  - id : Long
+  - username : String
+  - password : String
+  - role : UserRole
+  - enabled : boolean
+  --
+  + getId() : Long
+  + getUsername() : String
+  + getRole() : UserRole
+  + isEnabled() : boolean
+}
+
+class Category {
+  - id : Long
+  - name : String
+  --
+  + getId() : Long
+  + getName() : String
+  + getProducts() : List<Product>
+}
+
+class Product {
+  - id : Long
+  - name : String
+  - price : BigDecimal
+  - stockQuantity : int
+  --
+  + getId() : Long
+  + getName() : String
+  + getPrice() : BigDecimal
+  + getStockQuantity() : int
+  + getCategory() : Category
+}
+
+class Sale {
+  - id : Long
+  - quantitySold : int
+  - saleDate : LocalDate
+  --
+  + getProduct() : Product
+  + getQuantitySold() : int
+  + getSaleDate() : LocalDate
+}
+
+class Forecast {
+  - id : Long
+  - movingAvgValue : BigDecimal
+  - mlRegressionValue : BigDecimal
+  - predictedSales : BigDecimal
+  - predictedRevenue : BigDecimal
+  - lowerBound : BigDecimal
+  - upperBound : BigDecimal
+  - forecastMonth : LocalDate
+  - createdAt : Instant
+  --
+  + getProduct() : Product
+  + getPredictedSales() : BigDecimal
+  + getPredictedRevenue() : BigDecimal
+}
+
+class InventoryMovement <<inventory>> {
+  table: inventory
+  --
+  - id : Long
+  - quantityAdded : Integer
+  - dateAdded : LocalDate
+  - source : String
+  - createdAt : Instant
+  --
+  + getProduct() : Product
+  + prePersist() : void
+}
+
+class Vendor {
+  - id : Long
+  - name : String
+  - phone : String
+  - status : String
+  --
+  + getUser() : User
+  + getName() : String
+  + isActive() : boolean
+}
+
+class StockRequest {
+  - id : Long
+  - requestedQuantity : int
+  - status : StockRequestStatus
+  - requestDate : LocalDate
+  --
+  + getProduct() : Product
+  + getVendor() : Vendor
+  + getStatus() : StockRequestStatus
+}
+
+class Message {
+  - id : Long
+  - subject : String
+  - body : String
+  - status : MessageStatus
+  - createdAt : Instant
+  --
+  + getSender() : User
+  + getRecipient() : User
+  + getBody() : String
+}
+
+User --> UserRole
+Category "1" -- "*" Product : contains >
+Product "1" -- "*" Sale : has >
+Product "1" -- "*" Forecast : has >
+Product "1" -- "*" InventoryMovement : receives >
+Vendor "1" -- "*" StockRequest : fulfils >
+Product "1" -- "*" StockRequest : requested for >
+User "1" -- "0..1" Vendor : linked account >
+User "1" -- "*" Message : sends >
+User "1" -- "*" Message : receives >
+StockRequest --> StockRequestStatus
+Message --> MessageStatus
+
+note right of InventoryMovement
+  JPA entity InventoryMovement
+  maps to MySQL table **inventory**
+end note
+
+note bottom of Forecast
+  Unique: (product_id, forecast_month)
+  Ensemble: 70% MA + 30% clamped regression
+end note
+
+@enduml

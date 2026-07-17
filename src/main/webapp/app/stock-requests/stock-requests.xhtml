@@ -1,0 +1,143 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template/main.xhtml">
+
+    <ui:define name="title">Stock requests — ForecastPro</ui:define>
+
+    <ui:define name="content">
+        <h1 class="page-title">Stock requests</h1>
+
+        <h:form id="srForm" styleClass="stock-requests-form">
+            <p:growl id="growl"/>
+
+            <p:outputPanel id="newRequestPanel" layout="block" styleClass="stock-new-request-wrap">
+                <h:panelGroup layout="block" rendered="#{userSession.adminOrManager}">
+                    <p:panel header="New request" styleClass="module-panel">
+                        <p:panelGrid columns="2" columnClasses="label,value">
+                            <p:outputLabel for="srcat" value="Category"/>
+                            <p:selectOneMenu id="srcat" value="#{stockRequestBean.selectedCategoryId}" style="min-width:280px;">
+                                <f:selectItem itemLabel="Select category" itemValue="#{null}"/>
+                                <f:selectItems value="#{stockRequestBean.categories}" var="cat"
+                                               itemLabel="#{cat.name}" itemValue="#{cat.id}"/>
+                                <p:ajax listener="#{stockRequestBean.onCategoryChange}" process="@this"
+                                        update="srProductPanel srVendorPanel"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel for="srprod" value="Product"/>
+                            <p:outputPanel id="srProductPanel">
+                                <p:selectOneMenu id="srprod" value="#{stockRequestBean.formProductId}" style="min-width:280px;">
+                                    <f:selectItem itemLabel="Select product" itemValue="#{null}"/>
+                                    <f:selectItems value="#{stockRequestBean.products}" var="prod"
+                                                   itemValue="#{prod.id}"
+                                                   itemLabel="#{prod.name} (Stock: #{prod.stockQuantity})"/>
+                                </p:selectOneMenu>
+                            </p:outputPanel>
+
+                            <p:outputLabel for="srven" value="Vendor"/>
+                            <p:outputPanel id="srVendorPanel">
+                                <p:selectOneMenu id="srven" value="#{stockRequestBean.formVendorId}" style="min-width:280px;">
+                                    <f:selectItem itemLabel="Select vendor" itemValue="#{null}"/>
+                                    <f:selectItems value="#{stockRequestBean.vendorsForForm}" var="ven"
+                                                   itemValue="#{ven.id}" itemLabel="#{ven.name}"/>
+                                </p:selectOneMenu>
+                            </p:outputPanel>
+
+                            <p:outputLabel for="sq" value="Quantity"/>
+                            <p:inputNumber id="sq" value="#{stockRequestBean.formQuantity}" minValue="1" decimalPlaces="0"/>
+                        </p:panelGrid>
+                        <p:commandButton value="Submit" action="#{stockRequestBean.create}"
+                                         update="@form"
+                                         icon="pi pi-send"/>
+                    </p:panel>
+                </h:panelGroup>
+            </p:outputPanel>
+
+            <p:outputPanel id="srTable" styleClass="module-panel stock-requests-table-wrap">
+                <p:dataTable id="srDataTable" value="#{stockRequestBean.requests}" var="r" paginator="true" rows="12"
+                             styleClass="stock-requests-datatable"
+                             emptyMessage="No requests.">
+                    <p:column headerText="Product">
+                        <h:outputText value="#{r.product != null ? r.product.name : '—'}"/>
+                    </p:column>
+                    <p:column headerText="Vendor">
+                        <h:outputText value="#{r.vendor != null ? r.vendor.name : '—'}"/>
+                    </p:column>
+                    <p:column headerText="Quantity" style="width:5rem">
+                        <h:outputText value="#{r.requestedQuantity}"/>
+                    </p:column>
+                    <p:column headerText="Status" style="width:11rem">
+                        <span class="#{stockRequestBean.statusStyleClass(r.status)}">
+                            <h:outputText value="#{r.status}"/>
+                        </span>
+                    </p:column>
+                    <p:column headerText="Date" style="width:11rem">
+                        <h:outputText value="#{r.requestDate}">
+                            <f:convertDateTime type="localDate" pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Actions" style="width:14rem">
+                        <!-- ADMIN / MANAGER: cancel pending request -->
+                        <p:commandButton value="Reject"
+                                         action="#{stockRequestBean.updateStatus(r, 'REJECTED')}"
+                                         process="@this"
+                                         update="@form"
+                                         rendered="#{userSession.adminOrManager and r.status ne null and r.status.name() eq 'PENDING'}"
+                                         icon="pi pi-times"
+                                         styleClass="ui-button-danger"/>
+
+                        <!-- ADMIN: add delivered stock into inventory -->
+                        <p:commandButton value="Add to Stock"
+                                         action="#{stockRequestBean.addToStock(r)}"
+                                         process="@this"
+                                         update="@form"
+                                         rendered="#{userSession.admin and r.status ne null and r.status.name() eq 'DELIVERED'}"
+                                         icon="pi pi-plus-circle"
+                                         styleClass="ui-button-success"/>
+
+                        <!-- VENDOR: accept or reject pending -->
+                        <p:commandButton value="Accept"
+                                         action="#{stockRequestBean.updateStatus(r, 'APPROVED')}"
+                                         process="@this"
+                                         update="@form"
+                                         rendered="#{userSession.vendor and r.status ne null and r.status.name() eq 'PENDING'}"
+                                         icon="pi pi-check"
+                                         styleClass="ui-button-success"/>
+
+                        <p:commandButton value="Reject"
+                                         action="#{stockRequestBean.updateStatus(r, 'REJECTED')}"
+                                         process="@this"
+                                         update="@form"
+                                         rendered="#{userSession.vendor and r.status ne null and r.status.name() eq 'PENDING'}"
+                                         icon="pi pi-times"
+                                         styleClass="ui-button-danger"/>
+
+                        <!-- VENDOR: fulfillment flow -->
+                        <p:commandButton value="Ready &amp; Packed"
+                                         action="#{stockRequestBean.updateStatus(r, 'READY_PACKED')}"
+                                         process="@this"
+                                         update="@form"
+                                         rendered="#{userSession.vendor and r.status ne null and r.status.name() eq 'APPROVED'}"
+                                         icon="pi pi-box"/>
+
+                        <p:commandButton value="Out for Delivery"
+                                         action="#{stockRequestBean.updateStatus(r, 'OUT_FOR_DELIVERY')}"
+                                         process="@this"
+                                         update="@form"
+                                         rendered="#{userSession.vendor and r.status ne null and r.status.name() eq 'READY_PACKED'}"
+                                         icon="pi pi-truck"/>
+
+                        <p:commandButton value="Mark Delivered"
+                                         action="#{stockRequestBean.updateStatus(r, 'DELIVERED')}"
+                                         process="@this"
+                                         update="@form"
+                                         rendered="#{userSession.vendor and r.status ne null and r.status.name() eq 'OUT_FOR_DELIVERY'}"
+                                         icon="pi pi-check"/>
+                    </p:column>
+                </p:dataTable>
+            </p:outputPanel>
+        </h:form>
+    </ui:define>
+</ui:composition>
